@@ -9,7 +9,15 @@ import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
 import AuthBase from '@/layouts/AuthLayout.vue';
 import { login } from '@/routes';
+import { ref } from 'vue';
 import { store } from '@/routes/register';
+
+const roles = [
+  { id: 0, name: 'Élève' },
+  { id: 1, name: 'Prof' },
+];
+const selectedRole = ref(0);
+
 </script>
 
 <template>
@@ -21,6 +29,7 @@ import { store } from '@/routes/register';
 
         <Form
             v-bind="store.form()"
+            @submit="store.form().role_id = selectedRole.value"
             :reset-on-success="['password', 'password_confirmation']"
             v-slot="{ errors, processing }"
             class="flex flex-col gap-6"
@@ -36,9 +45,24 @@ import { store } from '@/routes/register';
                         :tabindex="1"
                         autocomplete="name"
                         name="name"
-                        placeholder="Full name"
+                        placeholder="Name"
                     />
                     <InputError :message="errors.name" />
+                </div>
+
+                <div class="grid gap-2">
+                    <Label for="nickname">nickname</Label>
+                    <Input
+                        id="nickname"
+                        type="text"
+                        required
+                        autofocus
+                        :tabindex="1"
+                        autocomplete="nickname"
+                        name="nickname"
+                        placeholder="Nickname"
+                    />
+                    <InputError :message="errors.nickname" />
                 </div>
 
                 <div class="grid gap-2">
@@ -79,6 +103,23 @@ import { store } from '@/routes/register';
                         placeholder="Confirm password"
                     />
                     <InputError :message="errors.password_confirmation" />
+                </div>
+
+                <div class="grid gap-2">
+                    <Label>Rôle</Label>
+                    <div class="flex gap-4">
+                        <label v-for="role in roles" :key="role.id" class="flex items-center gap-2">
+                            <input
+                                type="radio"
+                                :value="role.id"
+                                v-model="selectedRole"
+                                name="role_id"
+                                required
+                            />
+                            {{ role.name }}
+                        </label>
+                    </div>
+                    <InputError :message="errors.role_id" />
                 </div>
 
                 <Button
