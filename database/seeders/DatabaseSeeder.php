@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        DB::table('role')->insert([
+        DB::table('roles')->insert([
             ['id' => 1, 'name' => 'élève', 'created_at' => now(), 'updated_at' => now()],
             ['id' => 2, 'name' => 'prof', 'created_at' => now(), 'updated_at' => now()],
         ]);

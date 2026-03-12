@@ -43,7 +43,7 @@ const user = computed(() => page.props.auth.user);
                 <Heading
                     variant="small"
                     title="Profile information"
-                    description="Update your name and email address"
+                    description="Update your name, nickname and email address"
                 />
 
                 <Form
@@ -63,6 +63,20 @@ const user = computed(() => page.props.auth.user);
                             placeholder="Full name"
                         />
                         <InputError class="mt-2" :message="errors.name" />
+                    </div>
+
+                    <div class="grid gap-2">
+                        <Label for="name">Nickname</Label>
+                        <Input
+                            id="nickname"
+                            class="mt-1 block w-full"
+                            name="nickname"
+                            :default-value="user.nickname"
+                            required
+                            autocomplete="nickname"
+                            placeholder="Nickname"
+                        />
+                        <InputError class="mt-2" :message="errors.nickname" />
                     </div>
 
                     <div class="grid gap-2">

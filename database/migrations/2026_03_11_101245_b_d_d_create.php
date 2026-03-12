@@ -12,38 +12,38 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('role', function (Blueprint $table) {
+        Schema::create('roles', function (Blueprint $table) {
             $table->id();
             $table->string('name', 50)->unique();
             $table->timestamps();
         });
        
-        Schema::create('generic_instrument', function (Blueprint $table) {
+        Schema::create('generic_instruments', function (Blueprint $table) {
             $table->id();
             $table->string('name', 50)->unique();
         });
-        Schema::create('type_training', function (Blueprint $table) {
+        Schema::create('type_trainings', function (Blueprint $table) {
             $table->id();
             $table->string('name', 50)->unique();
         });
         
         Schema::table('users', function (Blueprint $table) {
-            $table->string('nickname', 50)->unique();
-            $table->foreignId('role_id')->constrained('role');
+            $table->string('nickname', 50)->nullable();
+            $table->foreignId('role_id')->constrained('roles');
         });
       
-        Schema::create('training', function (Blueprint $table) {
+        Schema::create('trainings', function (Blueprint $table) {
             $table->id();
             $table->string('name', 50);
             $table->date('date_training');
             $table->integer('duration');
-            $table->foreignId('type_training_id')->constrained('type_training');
+            $table->foreignId('type_training_id')->constrained('type_trainings');
             $table->foreignId('users_id')->constrained('users');
         });
-        Schema::create('instrument', function (Blueprint $table) {
+        Schema::create('instruments', function (Blueprint $table) {
             $table->id();
             $table->string('name', 50);
-            $table->foreignId('generic_instrument_id')->constrained('generic_instrument');
+            $table->foreignId('generic_instrument_id')->constrained('generic_instruments');
             $table->foreignId('users_id')->constrained('users');
         });
         Schema::create('groups', function (Blueprint $table) {
@@ -51,23 +51,23 @@ return new class extends Migration
             $table->string('name', 50);
             $table->foreignId('users_id')->constrained('users');
         });
-        Schema::create('sheet', function (Blueprint $table) {
+        Schema::create('sheets', function (Blueprint $table) {
             $table->id();
             $table->string('name', 50);
             $table->string('link', 255);
-            $table->foreignId('instrument_id')->constrained('instrument');
+            $table->foreignId('instrument_id')->constrained('instruments');
             $table->foreignId('users_id')->constrained('users');
         });
 
-        Schema::create('is_part', function (Blueprint $table) {
+        Schema::create('is_parts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('groups_id')->constrained('groups');
             $table->foreignId('users_id')->constrained('users');
         });
         
-        Schema::create('share', function (Blueprint $table) {
+        Schema::create('shares', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('sheet_id')->constrained('sheet');
+            $table->foreignId('sheet_id')->constrained('sheets');
             $table->foreignId('groups_id')->constrained('groups');
         });
 
@@ -84,14 +84,14 @@ return new class extends Migration
             $table->dropColumn('role_id');
             });
 
-        Schema::dropIfExists('share');
-        Schema::dropIfExists('is_part');
-        Schema::dropIfExists('sheet');
+        Schema::dropIfExists('shares');
+        Schema::dropIfExists('is_parts');
+        Schema::dropIfExists('sheets');
         Schema::dropIfExists('groups');
-        Schema::dropIfExists('instrument');
-        Schema::dropIfExists('training');
-        Schema::dropIfExists('type_training');
-        Schema::dropIfExists('generic_instrument');
-        Schema::dropIfExists('role');
+        Schema::dropIfExists('instruments');
+        Schema::dropIfExists('trainings');
+        Schema::dropIfExists('type_trainings');
+        Schema::dropIfExists('generic_instruments');
+        Schema::dropIfExists('roles');
     }
 };
