@@ -22,33 +22,23 @@ return new class extends Migration
             $table->id();
             $table->string('name', 50)->unique();
         });
-        Schema::create('type_trainings', function (Blueprint $table) {
+        Schema::create('training_medias', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 50)->unique();
+            $table->string('link', 255)->unique();
         });
-        
         Schema::table('users', function (Blueprint $table) {
             $table->string('nickname', 50)->nullable();
             $table->foreignId('role_id')->constrained('roles');
         });
-      
-        Schema::create('trainings', function (Blueprint $table) {
+        Schema::create('groups', function (Blueprint $table) {
             $table->id();
             $table->string('name', 50);
-            $table->date('date_training');
-            $table->integer('duration');
-            $table->foreignId('type_training_id')->constrained('type_trainings');
             $table->foreignId('users_id')->constrained('users');
         });
         Schema::create('instruments', function (Blueprint $table) {
             $table->id();
             $table->string('name', 50);
             $table->foreignId('generic_instrument_id')->constrained('generic_instruments');
-            $table->foreignId('users_id')->constrained('users');
-        });
-        Schema::create('groups', function (Blueprint $table) {
-            $table->id();
-            $table->string('name', 50);
             $table->foreignId('users_id')->constrained('users');
         });
         Schema::create('sheets', function (Blueprint $table) {
@@ -58,17 +48,24 @@ return new class extends Migration
             $table->foreignId('instrument_id')->constrained('instruments');
             $table->foreignId('users_id')->constrained('users');
         });
-
+        Schema::create('trainings', function (Blueprint $table) {
+            $table->id();
+            $table->string('name', 50);
+            $table->date('date_training');
+            $table->integer('duration');
+            $table->foreignId('training_media_id')->constrained('training_medias');
+            $table->foreignId('users_id')->constrained('users');
+            $table->foreignId('sheet_id')->nullable()->constrained('sheets');
+       });
         Schema::create('is_parts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('groups_id')->constrained('groups');
             $table->foreignId('users_id')->constrained('users');
         });
-        
         Schema::create('shares', function (Blueprint $table) {
             $table->id();
             $table->foreignId('sheet_id')->constrained('sheets');
-            $table->foreignId('groups_id')->constrained('groups');
+            $table->foreignId('group_id')->constrained('groups');
         });
 
     }
@@ -86,11 +83,11 @@ return new class extends Migration
 
         Schema::dropIfExists('shares');
         Schema::dropIfExists('is_parts');
+        Schema::dropIfExists('trainings');
         Schema::dropIfExists('sheets');
         Schema::dropIfExists('groups');
         Schema::dropIfExists('instruments');
-        Schema::dropIfExists('trainings');
-        Schema::dropIfExists('type_trainings');
+        Schema::dropIfExists('training_medias');
         Schema::dropIfExists('generic_instruments');
         Schema::dropIfExists('roles');
     }
