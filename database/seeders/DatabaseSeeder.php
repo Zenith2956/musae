@@ -21,6 +21,34 @@ class DatabaseSeeder extends Seeder
             ['id' => 2, 'name' => 'prof', 'created_at' => now(), 'updated_at' => now()],
         ]);
 
+        DB::table('generic_instruments')->insert([
+            ['id' => 1, 'name' => 'Guitare'],
+            ['id' => 2, 'name' => 'Piano'],
+            ['id' => 3, 'name' => 'Batterie'],
+            ['id' => 4, 'name' => 'Violon'],
+            ['id' => 5, 'name' => 'Saxophone'],
+            ['id' => 6, 'name' => 'Flûte'],
+            ['id' => 7, 'name' => 'Contrebasse'],
+            ['id' => 8, 'name' => 'Clarinette'],
+            ['id' => 9, 'name' => 'Trompette'],
+            ['id' => 10, 'name' => 'Harpe'],
+            ['id' => 11, 'name' => 'Accordéon'],
+            ['id' => 12, 'name' => 'Harmonica'],
+            ['id' => 13, 'name' => 'Tambourin'],
+            ['id' => 14, 'name' => 'Orgue'],
+            ['id' => 15, 'name' => 'Trombone'],
+            ['id' => 16, 'name' => 'Cor d’harmonie'],
+            ['id' => 17, 'name' => 'Bongo'],
+            ['id' => 18, 'name' => 'Maracas'],
+            ['id' => 19, 'name' => 'Ukulélé'],
+            ['id' => 20, 'name' => 'Mandoline'],
+            ['id' => 21, 'name' => 'Xylophone'],
+            ['id' => 22, 'name' => 'Glockenspiel'],
+            ['id' => 23, 'name' => 'Didgeridoo'],
+            ['id' => 24, 'name' => 'Vibraphone'],
+            ['id' => 25, 'name' => 'Balafon'],
+        ]);
+
         User::factory()->create([
             'name' => 'Test User',
             'nickname' => 'testuser',
