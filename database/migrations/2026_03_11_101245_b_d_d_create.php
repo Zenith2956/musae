@@ -29,7 +29,7 @@ return new class extends Migration
         
         Schema::table('users', function (Blueprint $table) {
             $table->string('nickname', 50)->unique();
-            $table->foreignId('role_id')->constrained('role'); // FK vers role
+            $table->foreignId('role_id')->constrained('role');
         });
       
         Schema::create('training', function (Blueprint $table) {
@@ -78,15 +78,20 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('role');
-        Schema::dropIfExists('generic_instrument');
-        Schema::dropIfExists('type_training');
-        Schema::dropIfExists('users');
-        Schema::dropIfExists('training');
-        Schema::dropIfExists('instrument');
-        Schema::dropIfExists('groups');
-        Schema::dropIfExists('sheet');
-        Schema::dropIfExists('is_part');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropForeign(['role_id']);
+            $table->dropColumn('nickname');
+            $table->dropColumn('role_id');
+            });
+
         Schema::dropIfExists('share');
+        Schema::dropIfExists('is_part');
+        Schema::dropIfExists('sheet');
+        Schema::dropIfExists('groups');
+        Schema::dropIfExists('instrument');
+        Schema::dropIfExists('training');
+        Schema::dropIfExists('type_training');
+        Schema::dropIfExists('generic_instrument');
+        Schema::dropIfExists('role');
     }
 };
