@@ -13,8 +13,8 @@ import { ref } from 'vue';
 import { store } from '@/routes/register';
 
 const roles = [
-  { id: 0, name: 'Élève' },
-  { id: 1, name: 'Prof' },
+  { id: 1, name: 'Élève' },
+  { id: 2, name: 'Prof' },
 ];
 const selectedRole = ref(0);
 

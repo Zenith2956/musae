@@ -17,8 +17,8 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         DB::table('role')->insert([
-            ['id' => 0, 'name' => 'élève', 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 1, 'name' => 'prof', 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 1, 'name' => 'élève', 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 2, 'name' => 'prof', 'created_at' => now(), 'updated_at' => now()],
         ]);
 
         User::factory()->create([
@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
             'nickname' => 'testuser',
             'email' => 'test@example.com',
             'password' => bcrypt('password123'), 
-            'role_id' => 0,
+            'role_id' => 1,
         ]);
 
     }

@@ -29,9 +29,8 @@ return new class extends Migration
         
         Schema::table('users', function (Blueprint $table) {
             $table->string('nickname', 50)->unique();
-            $table->foreignId('role_id')->default(0)->constrained('role'); // FK vers role
+            $table->foreignId('role_id')->constrained('role'); // FK vers role
         });
-
       
         Schema::create('training', function (Blueprint $table) {
             $table->id();
@@ -47,7 +46,7 @@ return new class extends Migration
             $table->foreignId('generic_instrument_id')->constrained('generic_instrument');
             $table->foreignId('users_id')->constrained('users');
         });
-        Schema::create('group', function (Blueprint $table) {
+        Schema::create('groups', function (Blueprint $table) {
             $table->id();
             $table->string('name', 50);
             $table->foreignId('users_id')->constrained('users');
@@ -62,14 +61,14 @@ return new class extends Migration
 
         Schema::create('is_part', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('group_id')->constrained('group');
+            $table->foreignId('groups_id')->constrained('groups');
             $table->foreignId('users_id')->constrained('users');
         });
         
         Schema::create('share', function (Blueprint $table) {
             $table->id();
             $table->foreignId('sheet_id')->constrained('sheet');
-            $table->foreignId('group_id')->constrained('group');
+            $table->foreignId('groups_id')->constrained('groups');
         });
 
     }
