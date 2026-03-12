@@ -78,6 +78,15 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('role');
+        Schema::dropIfExists('generic_instrument');
+        Schema::dropIfExists('type_training');
+        Schema::dropIfExists('users');
+        Schema::dropIfExists('training');
+        Schema::dropIfExists('instrument');
+        Schema::dropIfExists('groups');
+        Schema::dropIfExists('sheet');
+        Schema::dropIfExists('is_part');
+        Schema::dropIfExists('share');
     }
 };
