@@ -33,13 +33,13 @@ return new class extends Migration
         Schema::create('groups', function (Blueprint $table) {
             $table->id();
             $table->string('name', 50);
-            $table->foreignId('users_id')->constrained('users');
+            $table->foreignId('user_id')->constrained('users');
         });
         Schema::create('instruments', function (Blueprint $table) {
             $table->id();
             $table->string('name', 50);
             $table->foreignId('generic_instrument_id')->constrained('generic_instruments');
-            $table->foreignId('users_id')->constrained('users');
+            $table->foreignId('user_id')->constrained('users');
         });
         Schema::create('sheets', function (Blueprint $table) {
             $table->id();
@@ -47,7 +47,7 @@ return new class extends Migration
             $table->string('composer', 50);
             $table->string('link', 255);
             $table->foreignId('instrument_id')->constrained('instruments');
-            $table->foreignId('users_id')->constrained('users');
+            $table->foreignId('user_id')->constrained('users');
         });
         Schema::create('trainings', function (Blueprint $table) {
             $table->id();
@@ -55,13 +55,13 @@ return new class extends Migration
             $table->date('date_training');
             $table->integer('duration');
             $table->foreignId('training_media_id')->constrained('training_medias');
-            $table->foreignId('users_id')->constrained('users');
+            $table->foreignId('user_id')->constrained('users');
             $table->foreignId('sheet_id')->nullable()->constrained('sheets');
        });
         Schema::create('is_parts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('groups_id')->constrained('groups');
-            $table->foreignId('users_id')->constrained('users');
+            $table->foreignId('user_id')->constrained('users');
         });
         Schema::create('shares', function (Blueprint $table) {
             $table->id();

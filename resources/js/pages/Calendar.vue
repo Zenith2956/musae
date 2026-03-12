@@ -14,7 +14,6 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 const specialHours = {
-  const specialHours = {
   mon: { from: 9 * 60, to: 18 * 60, class: 'business-hours' },
   tue: { from: 9 * 60, to: 18 * 60, class: 'business-hours' },
   wed: [
@@ -23,8 +22,7 @@ const specialHours = {
   ],
   thu: { from: 9 * 60, to: 18 * 60, class: 'business-hours' },
   fri: { from: 9 * 60, to: 18 * 60, class: 'business-hours' }
-  }
-};
+  };
 </script>
 
 
