@@ -17,4 +17,9 @@ class Training extends Model
         'user_id',
         'sheet_id'
     ];
+
+        protected $casts = [
+        'date_training' => 'datetime',
+    ];
+    
 }

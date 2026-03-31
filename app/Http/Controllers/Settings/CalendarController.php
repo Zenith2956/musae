@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Settings;
 
 use App\Models\Training;
@@ -12,31 +13,85 @@ class CalendarController extends Controller
     public function events(Request $request)
     {
         try {
-            Log::info('Start Date: ' . $request->start);
-            Log::info('End Date: ' . $request->end);
+            if (!$request->start || !$request->end) {
+                return response()->json(['error' => 'Dates manquantes'], 400);
+            }
 
-            $start = Carbon::parse($request->start)->startOfDay();
-            $end = Carbon::parse($request->end)->endOfDay();
+            $start = Carbon::parse($request->start);
+            $end = Carbon::parse($request->end);
 
             $trainings = Training::whereBetween('date_training', [$start, $end])->get();
 
-            if ($trainings->isEmpty()) {
-                return response()->json([]);
-            }
+            return response()->json(
+                $trainings->map(function ($training) {
+                    $start = Carbon::parse($training->date_training);
 
-            $events = $trainings->map(function ($training) {
-                return [
-                    'id' => $training->id,
-                    'title' => $training->name,
-                    'start' => $training->date_training->toIso8601String(),
-                    'end' => Carbon::parse($training->date_training)->addMinutes($training->duration)->toIso8601String(),
-                ];
-            });
-
-            return response()->json($events);
+                    return [
+                        'id' => $training->id,
+                        'title' => $training->name,
+                        'start' => $start->toIso8601String(),
+                        'end' => $start->copy()
+                            ->addMinutes($training->duration ?? 0)
+                            ->toIso8601String(),
+                    ];
+                })
+            );
         } catch (\Exception $e) {
-            Log::error('Error fetching calendar events: ' . $e->getMessage());
-            return response()->json(['error' => 'Une erreur est survenue : ' . $e->getMessage()], 500);
+            Log::error($e);
+
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
         }
+    }
+
+    public function store(Request $request)
+    {
+        try {
+            $start = \Carbon\Carbon::parse($request->start);
+            $end = \Carbon\Carbon::parse($request->end);
+
+            $training = Training::create([
+                'name' => $request->title,
+                'date_training' => $start,
+                'duration' => $start->diffInMinutes($end),
+                'user_id' => 1
+            ]);
+
+            return response()->json([
+                'id' => $training->id,
+                'title' => $training->name,
+                'start' => $training->date_training->toIso8601String(),
+                'end' => $training->date_training
+                    ->copy()
+                    ->addMinutes($training->duration)
+                    ->toIso8601String(),
+            ]);
+        } catch (\Exception $e) {
+            Log::error($e);
+
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+    public function update(Request $request, $id)
+    {
+        $training = Training::findOrFail($id);
+
+        $start = \Carbon\Carbon::parse($request->start);
+        $end = \Carbon\Carbon::parse($request->end);
+
+        $training->update([
+            'name' => $request->title ?? $training->name,
+            'instrument' => $request->instrument ?? $training->instrument,
+            'link' => $request->link ?? $training->link,
+            'date_training' => $start,
+            'duration' => $start->diffInMinutes($end)
+        ]);
+
+        return response()->json(['success' => true]);
     }
 }

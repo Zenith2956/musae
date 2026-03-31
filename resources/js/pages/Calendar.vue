@@ -1,107 +1,275 @@
-
 <script setup lang="ts">
 import { ref } from 'vue'
 import { VueCal } from 'vue-cal'
 import 'vue-cal/style'
-
 import { Head } from '@inertiajs/vue3'
 import AppLayout from '@/layouts/AppLayout.vue'
-import type { BreadcrumbItem } from '@/types'
-import { calendar } from '@/routes'
-
 import { addDatePrototypes } from 'vue-cal'
 
-// nécessaire pour certaines fonctions date de vue-cal
 addDatePrototypes()
-
-const breadcrumbs: BreadcrumbItem[] = [{
-    title: 'Calendar',
-    href: calendar(),
-}, ]
 interface Event {
-    id: string;
-    title: string;
-    start: Date;
-    end: Date;
+    id?: string
+    title: string
+  instrument?: string
+  link?: string
+  start: Date
+  end: Date
 }
+
 const events = ref<Event[]>([])
+const currentView = ref<any>(null)
+    const showDialog = ref(false)
+    const editingEvent = ref<Event | null>(null)
+        let resolveEvent: ((event: any) => void) | null = null
+        
+        // =======================================
+        // FETCH EVENTS
+        // =======================================
+        const fetchEvents = async (start: Date, end: Date) => {
+            console.log('📡 FETCH EVENTS', start, end)
+            
+            try {
+                const res = await fetch(`/calendar/events?start=${start.toISOString()}&end=${end.toISOString()}`)
+                const data = await res.json()
+                
+                console.log('📥 DATA FROM API', data)
+                
+                events.value = data.map((e: any) => ({
+                    id: String(e.id),
+                    title: e.title,
+      instrument: e.instrument || '',
+      link: e.link || '',
+      start: new Date(e.start),
+      end: new Date(e.end)
+    }))
 
-const loading = ref(false)
+    console.log('📅 EVENTS LOADED', events.value)
+    
+  } catch (e) {
+      console.error('❌ FETCH ERROR', e)
+  }
+}
 
-/*
-Charge les événements depuis Laravel
-*/
-const fetchEvents = async (start: string, end: string) => {
-    loading.value = true;
-
-    try {
-        const response = await fetch(`/calendar/events?start=${start}&end=${end}`);
-        const data = await response.json();
-
-        console.log("Données récupérées:", data);
-
-        // Typage explicite pour 'events'
-        events.value = data.map((event: any) => {
-            console.log("Event Start:", event.start);
-            console.log("Event End:", event.end);
-            return {
-                id: String(event.id),  // Convertir l'ID en string
-                title: String(event.title),  // Convertir le titre en string
-                start: new Date(event.start),
-                end: new Date(event.end)
-                };
-            });
-
-    } catch (error) {
-        console.error("Erreur lors du chargement des événements:", error);
-    } finally {
-        loading.value = false;
-    }
-};
-
-/*
-Quand le calendrier est prêt
-*/
+// =======================================
+// VUE CAL
+// =======================================
 const onReady = ({ view }: any) => {
-
-    fetchEvents(view.start.format('YYYY-MM-DD HH:mm:ss'), view.end.format('YYYY-MM-DD HH:mm:ss'));
+    console.log('🟢 CAL READY', view)
+  currentView.value = view
+  fetchEvents(view.start, view.end)
 }
 
-/*
-Quand on change de semaine/mois/jour
-*/
 const onViewChange = (view: any) => {
-
-    fetchEvents(view.start.format('YYYY-MM-DD HH:mm:ss'), view.end.format('YYYY-MM-DD HH:mm:ss'));
-
+  console.log('🔄 VIEW CHANGE', view)
+  currentView.value = view
+  fetchEvents(view.start, view.end)
 }
 
+// =======================================
+// CREATE EVENT (drag)
+// =======================================
+const onEventCreate = ({ event, resolve }: any) => {
+  console.log('✨ CREATE EVENT TRIGGERED', event)
+
+  editingEvent.value = {
+    title: '',
+    instrument: '',
+    link: '',
+    start: new Date(event.start),
+    end: new Date(event.end)
+  }
+
+  resolveEvent = resolve
+  showDialog.value = true
+}
+
+// =======================================
+// CLICK EVENT (edit)
+// =======================================
+const onEventClick = (event: Event) => {
+  console.log('🖱 CLICK EVENT', event)
+
+  editingEvent.value = { ...event }
+  resolveEvent = null
+  showDialog.value = true
+}
+
+// =======================================
+// SAVE (CREATE OR UPDATE)
+// =======================================
+const saveEvent = async () => {
+  if (!editingEvent.value) return
+
+  console.log('💾 SAVE EVENT', editingEvent.value)
+
+  try {
+    if (editingEvent.value.id) {
+      // ================= UPDATE =================
+      console.log('✏️ UPDATE EVENT')
+
+      await fetch(`/calendar/events/${editingEvent.value.id}`, {
+        method: 'PUT',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+        },
+        body: JSON.stringify({
+          title: editingEvent.value.title,
+          instrument: editingEvent.value.instrument,
+          link: editingEvent.value.link,
+          start: editingEvent.value.start.toISOString(),
+          end: editingEvent.value.end.toISOString()
+        })
+      })
+
+      const idx = events.value.findIndex(e => e.id === editingEvent.value!.id)
+      if (idx !== -1) {
+        events.value[idx] = { ...editingEvent.value }
+      }
+
+      console.log('✅ EVENT UPDATED')
+
+    } else {
+      // ================= CREATE =================
+      console.log('🆕 CREATE EVENT')
+
+      const res = await fetch('/calendar/events', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+        },
+        body: JSON.stringify({
+          title: editingEvent.value.title,
+          instrument: editingEvent.value.instrument,
+          link: editingEvent.value.link,
+          start: editingEvent.value.start.toISOString(),
+          end: editingEvent.value.end.toISOString()
+        })
+      })
+
+      const data = await res.json()
+
+      console.log('📥 CREATED EVENT FROM API', data)
+
+      const createdEvent: Event = {
+        id: String(data.id),
+        title: data.title,
+        instrument: data.instrument || '',
+        link: data.link || '',
+        start: new Date(data.start),
+        end: new Date(data.end)
+      }
+
+      events.value.push(createdEvent)
+
+      resolveEvent?.(createdEvent)
+
+      console.log('✅ EVENT CREATED')
+    }
+
+  } catch (e) {
+    console.error('❌ SAVE ERROR', e)
+    resolveEvent?.(false)
+  }
+
+  showDialog.value = false
+  editingEvent.value = null
+}
+
+// =======================================
+// DRAG / RESIZE
+// =======================================
+const onEventChange = async (event: Event) => {
+  console.log('🔁 EVENT CHANGED (drag/resize)', event)
+
+  try {
+    await fetch(`/calendar/events/${event.id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+      },
+      body: JSON.stringify({
+        start: event.start.toISOString(),
+        end: event.end.toISOString(),
+        title: event.title
+      })
+    })
+
+    const idx = events.value.findIndex(e => e.id === event.id)
+    if (idx !== -1) events.value[idx] = { ...event }
+
+    console.log('✅ EVENT UPDATED (drag)')
+
+  } catch (e) {
+    console.error('❌ DRAG ERROR', e)
+  }
+}
+
+// =======================================
+const cancelDialog = () => {
+  console.log('❌ CANCEL')
+  resolveEvent?.(false)
+  showDialog.value = false
+  editingEvent.value = null
+}
 </script>
 
 <template>
-    <Head title="Calendar" />
-    
-    
-    <AppLayout :breadcrumbs="breadcrumbs">
-    
-        <div class="p-4">
-    
-            <vue-cal
-                :events="events"
-                :time-from="8 * 60"
-                :time-to="19 * 60"
-                :views-bar="true"
-                :events-on-month-view="true"
-                :snap-to-interval="5"
-                editable-events @ready="onReady" @view-change="onViewChange" />
-    
+  <Head title="Calendar" />
+  <AppLayout>
+    <div class="p-4">
+
+      <vue-cal
+        :events="events"
+        :time-from="8*60"
+        :time-to="19*60"
+        :snap-to-interval="5"
+        editable-events
+        @ready="onReady"
+        @view-change="onViewChange"
+        @event-create="onEventCreate"
+        @event-click="onEventClick"
+        @event-change="onEventChange"
+      />
+
+      <!-- DIALOG -->
+      <div v-if="showDialog" class="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+        <div class="bg-white p-4 rounded shadow w-96">
+
+          <h2 class="mb-2 font-bold">
+            {{ editingEvent?.id ? 'Modifier' : 'Créer' }} un événement
+          </h2>
+
+          <input v-model="editingEvent!.title" placeholder="Nom"
+                 class="border p-1 w-full mb-2" />
+
+          <input v-model="editingEvent!.instrument" placeholder="Instrument"
+                 class="border p-1 w-full mb-2" />
+
+          <input v-model="editingEvent!.link" placeholder="Lien"
+                 class="border p-1 w-full mb-2" />
+
+          <div class="flex justify-end gap-2">
+            <button @click="cancelDialog" class="px-3 py-1 border rounded">
+              Annuler
+            </button>
+            <button @click="saveEvent" class="px-3 py-1 bg-blue-500 text-white rounded">
+              Valider
+            </button>
+          </div>
+
         </div>
-    
-    </AppLayout>
+      </div>
+
+    </div>
+  </AppLayout>
 </template>
 
 <style scoped>
 .vuecal {
-    height: 650px;
+  height: 650px;
 }
 </style>
