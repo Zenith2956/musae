@@ -52,15 +52,15 @@ return new class extends Migration
         Schema::create('trainings', function (Blueprint $table) {
             $table->id();
             $table->string('name', 50);
-            $table->date('date_training');
+            $table->dateTime('date_training');
             $table->integer('duration');
-            $table->foreignId('training_media_id')->constrained('training_medias');
+            $table->foreignId('training_media_id')->nullable()->constrained('training_medias');
             $table->foreignId('user_id')->constrained('users');
             $table->foreignId('sheet_id')->nullable()->constrained('sheets');
        });
         Schema::create('is_parts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('groups_id')->constrained('groups');
+            $table->foreignId('group_id')->constrained('groups');
             $table->foreignId('user_id')->constrained('users');
         });
         Schema::create('shares', function (Blueprint $table) {

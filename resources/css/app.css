@@ -169,4 +169,17 @@
     body {
         @apply bg-background text-foreground;
     }
+    
+    
+    
+    .business-hours {background-color: #00daff21;}
+    .vuecal__event {color: #fff;border: 1px solid;}
+    .vuecal__event.leisure {background-color: #fd9c42d9;}
+    .vuecal__event.health {background-color: #57cea9cc;}
+    .vuecal__event.sport {background-color: #ff6666d9;}
+    .vuecal__event.lunch {
+    background-color: repeating-linear-gradient(45deg, transparent 0 10px, #ffffff11 10px 20px);
+    border: none;
+    }
+
 }

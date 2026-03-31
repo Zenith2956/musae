@@ -56,6 +56,14 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password123'), 
             'role_id' => 1,
         ]);
+        
+        DB::table('training_medias')->insert([
+            ['id' => 1, 'link' => 'https://example.com']
+        ]);
 
+        DB::table('trainings')->insert([
+            ['id' => 1, 'name' => 'test1', 'date_training' => '2026-03-14 10:45:00', 'duration' => 60, 'training_media_id' => null, 'user_id' => 1, 'sheet_id' => null],
+            ['id' => 2, 'name' => 'Didjeridoo', 'date_training' => '2026-03-16 15:00:00', 'duration' => 60, 'training_media_id' => null, 'user_id' => 1, 'sheet_id' => null],
+        ]);
     }
 }
