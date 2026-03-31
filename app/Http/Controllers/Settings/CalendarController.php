@@ -57,7 +57,7 @@ class CalendarController extends Controller
                 'duration' => $start->diffInMinutes($end),
                 'user_id' => 1
             ]);
-
+            Log::debug("Created new Training {training}", ['training' => $training ]);
             return response()->json([
                 'id' => $training->id,
                 'title' => $training->name,

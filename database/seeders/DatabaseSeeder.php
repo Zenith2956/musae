@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\Role;
+use App\Models\GenericInstrument;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -16,13 +18,9 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-       Role::firstOrCreate(['id' => 1], ['name' => 'élève']);
-       Role::firstOrCreate(['id' => 2], ['name' => 'prof']);
+       Role::firstOrCreate(['name' => 'élève']);
+       Role::firstOrCreate(['name' => 'prof']);
        
-        DB::table('roles')->insert([
-            ['id' => 1, 'name' => 'élève', 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 2, 'name' => 'prof', 'created_at' => now(), 'updated_at' => now()],
-        ]);
 
         DB::table('generic_instruments')->insert([
             ['id' => 1, 'name' => 'Guitare'],

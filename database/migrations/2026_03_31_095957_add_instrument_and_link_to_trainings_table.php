@@ -14,6 +14,7 @@ return new class extends Migration
     Schema::table('trainings', function (Blueprint $table) {
         $table->string('instrument')->nullable();
         $table->string('link')->nullable();
+        $table->timestamps();
     });
 }
 
