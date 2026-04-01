@@ -6,13 +6,12 @@ use App\Models\Training;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\BaseController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 
-class CalendarController extends Controller
+class CalendarController extends BaseController
 {
-
 
     public function __construct()
     {
