@@ -11,6 +11,8 @@ class Training extends Model
 
     protected $fillable = [
         'name',
+        'instrument',
+        'link',
         'date_training',
         'duration',
         'training_media_id',

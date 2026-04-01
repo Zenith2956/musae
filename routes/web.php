@@ -14,6 +14,7 @@ Route::inertia('/', 'Welcome', [
 Route::get('/calendar/events', [CalendarController::class, 'index']);
 Route::put('/calendar/events/{id}', [CalendarController::class, 'update']);
 Route::post('/calendar/events', [CalendarController::class, 'store']);
+Route::delete('/calendar/events/{id}', [CalendarController::class, 'destroy']);
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'Dashboard')->name('dashboard');
@@ -22,5 +23,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/calendar', [CalendarController::class, 'index']);
+    Route::get('/calendar/events', [CalendarController::class, 'events']);
+    Route::post('/calendar/events', [CalendarController::class, 'store']);
+    Route::put('/calendar/events/{id}', [CalendarController::class, 'update']);
+    Route::delete('/calendar/events/{id}', [CalendarController::class, 'destroy']);
+});
 
 require __DIR__ . '/settings.php';
