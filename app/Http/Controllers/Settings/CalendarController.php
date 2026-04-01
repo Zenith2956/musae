@@ -44,7 +44,26 @@ class CalendarController extends Controller
             ], 500);
         }
     }
+    public function update(Request $request, $id)
+    {
+        $training = Training::findOrFail($id);
 
+        $start = Carbon::parse($request->start);
+        $end = Carbon::parse($request->end);
+        Log::debug("update new Training {training}", ['training' => $training]);
+
+        $training->update([
+            // 'start' => $request->start ? Carbon::parse($request->start) : $training->date_training,
+            // 'end' => $request->end ? Carbon::parse($request->end) : $training->date_training->copy()->addMinutes($training->duration),
+            'name' => $request->title ?? $training->name,
+            'instrument' => $request->instrument ?? $training->instrument,
+            'link' => $request->link ?? $training->link,
+            'date_training' => $start,
+            'duration' => $start->diffInMinutes($end)
+        ]);
+
+        return response()->json(['success' => true]);
+    }
     public function store(Request $request)
     {
         try {
@@ -57,7 +76,7 @@ class CalendarController extends Controller
                 'duration' => $start->diffInMinutes($end),
                 'user_id' => 1
             ]);
-            Log::debug("Created new Training {training}", ['training' => $training ]);
+            Log::debug("Created new Training {training}", ['training' => $training]);
             return response()->json([
                 'id' => $training->id,
                 'title' => $training->name,
@@ -74,24 +93,5 @@ class CalendarController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
-    }
-
-
-    public function update(Request $request, $id)
-    {
-        $training = Training::findOrFail($id);
-
-        $start = \Carbon\Carbon::parse($request->start);
-        $end = \Carbon\Carbon::parse($request->end);
-
-        $training->update([
-            'name' => $request->title ?? $training->name,
-            'instrument' => $request->instrument ?? $training->instrument,
-            'link' => $request->link ?? $training->link,
-            'date_training' => $start,
-            'duration' => $start->diffInMinutes($end)
-        ]);
-
-        return response()->json(['success' => true]);
     }
 }
