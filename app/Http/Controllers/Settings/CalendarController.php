@@ -28,7 +28,7 @@ class CalendarController extends Controller
     }
 
     public function events(Request $request)
-    {
+    { 
         $userId = Auth::id();
         $start = $request->start ? Carbon::parse($request->start) : now()->startOfMonth();
         $end = $request->end ? Carbon::parse($request->end) : now()->endOfMonth();

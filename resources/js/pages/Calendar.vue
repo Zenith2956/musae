@@ -82,7 +82,7 @@ const saveEvent = async () => {
       if (idx !== -1) {
 
         events.value.splice(idx, 1, { ...event })
-      } 
+      }
     } else {
       const res = await fetch(`/calendar/events`, {
         method: 'POST',
@@ -120,18 +120,22 @@ const cancelDialog = () => { resolveEvent?.(false); showDialog.value = false; ed
 </script>
 
 <template>
+
   <Head title="Calendar" />
   <AppLayout>
     <div class="p-4">
-      <vue-cal :events="events"
-      :time-from="8*60"
-      :time-to="19*60"
-      :snap-to-interval="5"
-      editable-events
-      @ready="onReady"
-      @view-change="onViewChange"
-      @event-create="onEventCreate"
-      @event-click="onEventClick" />
+      <vue-cal
+          :events="events"
+          :time-from="8 * 60"
+          :time-to="21 * 60"
+          :snap-to-interval="5"
+          events-on-month-view
+          editable-events
+          @ready="onReady"
+          @view-change="onViewChange"
+          @event-create="onEventCreate"
+          @event-click="onEventClick" />
+
       <div v-if="showDialog" class="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
         <div class="bg-white p-4 rounded shadow w-96">
           <h2 class="mb-2 font-bold">{{ editingEvent?.id ? 'Modifier' : 'Créer' }} un événement</h2>
@@ -139,7 +143,8 @@ const cancelDialog = () => { resolveEvent?.(false); showDialog.value = false; ed
           <input v-model="editingEvent!.instrument" placeholder="Instrument" class="border p-1 w-full mb-2" />
           <input v-model="editingEvent!.link" placeholder="Lien" class="border p-1 w-full mb-2" />
           <div class="flex justify-end gap-2">
-            <button v-if="editingEvent?.id" @click="deleteEvent" class="px-3 py-1 bg-red-500 text-white rounded">Supprimer</button>
+            <button v-if="editingEvent?.id" @click="deleteEvent"
+              class="px-3 py-1 bg-red-500 text-white rounded">Supprimer</button>
             <button @click="cancelDialog" class="px-3 py-1 border rounded">Annuler</button>
             <button @click="saveEvent" class="px-3 py-1 bg-blue-500 text-white rounded">Valider</button>
           </div>
@@ -150,5 +155,7 @@ const cancelDialog = () => { resolveEvent?.(false); showDialog.value = false; ed
 </template>
 
 <style scoped>
-.vuecal { height: 650px; }
+.vuecal {
+  height: 650px;
+}
 </style>
