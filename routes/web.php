@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use App\Http\Controllers\Settings\CalendarController;
 
+use App\Http\Controllers\SheetController;
 
 Route::inertia('/', 'Welcome', [
     'canRegister' => Features::enabled(Features::registration()),
@@ -27,6 +28,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/calendar/events', [CalendarController::class, 'store']);
     Route::put('/calendar/events/{id}', [CalendarController::class, 'update']);
     Route::delete('/calendar/events/{id}', [CalendarController::class, 'destroy']);
+    Route::get('/library', [SheetController::class, 'index']);
+    Route::post('/post', [SheetController::class, 'store']);
+    Route::get('/sheet/{sheet}', [SheetController::class, 'detail'])->name('sheet.detail');
 });
 
-require __DIR__ . '/settings.php';
+
+require __DIR__.'/settings.php';

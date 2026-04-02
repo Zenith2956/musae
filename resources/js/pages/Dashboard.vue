@@ -1,4 +1,5 @@
 <script setup lang="ts">
+
 import { Head } from '@inertiajs/vue3';
 import PlaceholderPattern from '@/components/PlaceholderPattern.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
@@ -11,9 +12,17 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: dashboard(),
     },
 ];
+
+
 </script>
 
 <template>
+    <!-- <h1>Dashboard</h1>
+    <h2></h2>
+    <p v-for="sheet in sheets" :key="sheet.id">
+        {{ sheet.name }}
+    </p> -->
+
     <Head title="Dashboard" />
 
     <AppLayout :breadcrumbs="breadcrumbs">

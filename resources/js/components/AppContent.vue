@@ -24,5 +24,6 @@ const className = computed(() => props.class);
         :class="className"
     >
         <slot />
+
     </main>
 </template>
