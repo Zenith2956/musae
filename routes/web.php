@@ -20,7 +20,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('calendar', 'Calendar')->name('calendar');
     Route::get('/calendar/events', [CalendarController::class, 'events']);
 });
-
+// Route::resources('sheets', SheetController::class);
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/calendar', [CalendarController::class, 'index']);

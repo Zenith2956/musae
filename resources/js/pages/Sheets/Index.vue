@@ -2,6 +2,8 @@
 import { ref } from 'vue'
 import { router } from '@inertiajs/vue3'
 import { Link } from '@inertiajs/vue3'
+import AppLayout from '@/layouts/AppLayout.vue';
+
 
 export default {
   components: {
@@ -11,6 +13,7 @@ export default {
   props: {
     sheets: Array
   },
+  layout: AppLayout,
 
   setup() {
     const form = ref({
@@ -32,21 +35,22 @@ export default {
 </script>
 
 <template>
-  <section class="container">
-    <h1>Partitions</h1>
-    <div v-for="sheet in sheets" :key="sheet.id" class="sheets-blocks">
-      <Link :href="`/sheet/${sheet.id}`" class="sheet-card">
-        <p>{{ sheet.name }}</p>
-        <img class="sheet-image" :src="sheet.link" alt="">
-      </Link>
-    </div>
-  </section>
-  <label for="name">Name: </label>
+  <AppLayout>
+    <section class="container">
+      <h1>Partitions</h1>
+      <div v-for="sheet in sheets" :key="sheet.id" class="sheets-blocks">
+        <Link :href="`/sheet/${sheet.id}`" class="sheet-card">
+          <p>{{ sheet.name }}</p>
+          <img class="sheet-image" :src="sheet.link" alt="">
+        </Link>
+      </div>
+    </section>
+    <label for="name">Name: </label>
     <input id="name" type="text" v-model="form.name">
     <label for="name">Link: </label>
     <input id="name" type="text" v-model="form.link">
     <label for="name">Instrument: </label>
-    <select id="name" v-model="form.instrument">
+    <select id="name" v-model="form.instrument_id">
         <option value="1">Guitare</option>
         <option value="2">Piano</option>
         <option value="3">Batterie</option>
@@ -59,7 +63,9 @@ export default {
         <option value="10">Harpe</option>
     </select>
     <button @click="submit">Submit</button>
+  </AppLayout>
 </template>
+
 
 <style>
 

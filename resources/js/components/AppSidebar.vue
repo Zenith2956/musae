@@ -14,9 +14,9 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard, calendar } from '@/routes';
+import { dashboard, calendar, library } from '@/customRoutes';
 import type { NavItem } from '@/types';
-
+ 
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
@@ -27,6 +27,11 @@ const mainNavItems: NavItem[] = [
         title: 'Calendar',
         href: calendar(),
         icon: BookOpen,
+    },
+    {
+        title: 'Library',
+        href: library(),
+        icon: FolderGit2,
     },
 ];
 
