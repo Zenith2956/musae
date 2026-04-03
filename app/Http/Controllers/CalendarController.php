@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Settings;
+namespace App\Http\Controllers;
 
 use App\Models\Training;
 use Illuminate\Http\Request;
@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\BaseController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
+use App\Models\GenericInstrument;
 
 class CalendarController extends BaseController
 {
@@ -27,7 +28,7 @@ class CalendarController extends BaseController
     }
 
     public function events(Request $request)
-    { 
+    {
         $userId = Auth::id();
         $start = $request->start ? Carbon::parse($request->start) : now()->startOfMonth();
         $end = $request->end ? Carbon::parse($request->end) : now()->endOfMonth();
@@ -53,8 +54,11 @@ class CalendarController extends BaseController
     {
         $start = Carbon::parse($request->start);
         $end = Carbon::parse($request->end);
-        $userId = Auth::id();
+        $userId = $request->user_id ?? Auth::id();
 
+        if ($request->user_id != Auth::id()) {
+            abort(403);
+        }
         $training = Training::create([
             'name' => $request->title,
             'instrument' => $request->instrument,
@@ -87,7 +91,9 @@ class CalendarController extends BaseController
             'date_training' => $start,
             'duration' => $start->diffInMinutes($end),
         ]);
-
+        if ($training->user_id != Auth::id()) {
+            abort(403);
+        }
         return response()->json(['success' => true]);
     }
 
@@ -95,7 +101,15 @@ class CalendarController extends BaseController
     {
         $training = Training::findOrFail($id);
         $training->delete();
-
+        if ($training->user_id != Auth::id()) {
+            abort(403);
+        }
         return response()->json(['success' => true]);
+    }
+
+    public function listInstruments()
+    {
+        $instruments = GenericInstrument::all(['id', 'name']);
+        return response()->json($instruments);
     }
 }

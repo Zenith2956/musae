@@ -44,9 +44,9 @@ return new class extends Migration
         Schema::create('sheets', function (Blueprint $table) {
             $table->id();
             $table->string('name', 50);
-            $table->string('composer', 50);
+            $table->string('composer', 50)->nullable();
             $table->string('link', 255);
-            $table->foreignId('instrument_id')->constrained('instruments');
+            $table->foreignId('instrument_id')->constrained('generic_instruments');
             $table->foreignId('user_id')->constrained('users');
         });
         Schema::create('trainings', function (Blueprint $table) {
@@ -57,6 +57,9 @@ return new class extends Migration
             $table->foreignId('training_media_id')->nullable()->constrained('training_medias');
             $table->foreignId('user_id')->constrained('users');
             $table->foreignId('sheet_id')->nullable()->constrained('sheets');
+            $table->foreignId('instrument_id')->nullable()->constrained('generic_instruments');
+            $table->string('link')->nullable();
+            $table->timestamps();
        });
         Schema::create('is_parts', function (Blueprint $table) {
             $table->id();

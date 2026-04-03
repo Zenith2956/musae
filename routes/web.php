@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
-use App\Http\Controllers\Settings\CalendarController;
+use App\Http\Controllers\CalendarController;
 
 use App\Http\Controllers\SheetController;
 
@@ -19,8 +19,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'Dashboard')->name('dashboard');
     Route::inertia('calendar', 'Calendar')->name('calendar');
     Route::get('/calendar/events', [CalendarController::class, 'events']);
+    Route::get('/calendar/instruments', [CalendarController::class, 'listInstruments']);
+    Route::get('library/instruments', [SheetController::class, 'listInstruments']);
+    Route::get('/library', [SheetController::class, 'index']);
+    Route::post('/post', [SheetController::class, 'store']);
+    Route::get('/sheet/{sheet}', [SheetController::class, 'detail'])->name('sheet.detail');
 });
 // Route::resources('sheets', SheetController::class);
+
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/calendar', [CalendarController::class, 'index']);
@@ -31,7 +37,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/library', [SheetController::class, 'index']);
     Route::post('/post', [SheetController::class, 'store']);
     Route::get('/sheet/{sheet}', [SheetController::class, 'detail'])->name('sheet.detail');
+    Route::post('/sheet/store', [SheetController::class, 'store']);
 });
 
 
-require __DIR__.'/settings.php';
+require __DIR__ . '/settings.php';

@@ -14,7 +14,8 @@ class Sheet extends Model
         'name',
         'link',
         'instrument_id',
-        'users_id'
+        'composer',
+        'user_id'
 
     ];
     public $timestamps = false;

@@ -1,26 +1,48 @@
-<script>
+<script lang="ts">
 import { ref } from 'vue'
-import { router } from '@inertiajs/vue3'
-import { Link } from '@inertiajs/vue3'
-import AppLayout from '@/layouts/AppLayout.vue';
+import { router, Link } from '@inertiajs/vue3'
+import AppLayout from '@/layouts/AppLayout.vue'
+import sheet from '@/customRoutes/sheet'
 
+interface Sheet {
+  id: number
+  name: string
+  link: string
+  instrument_name?: string
+  composer?: string
+  user_id: number
+}
 
 export default {
-  components: {
-    Link
-  },
-
-  props: {
-    sheets: Array
-  },
+  components: { Link },
+  props: { sheets: {
+    type: Array as () => Sheet[],
+    required: true
+    }},
   layout: AppLayout,
 
-  setup() {
+  setup(props: { sheets: Sheet[] }){
     const form = ref({
       name: '',
       link: '',
-      instrument_id: ''
+      instrument_id: '',
+      composer: '',
+      undefined
     })
+
+    const instrumentOptions = ref<{ id: number; name: string }[]>([])
+
+    const fetchInstruments = async () => {
+      try {
+        const res = await fetch('/calendar/instruments')
+        const data = await res.json()
+        instrumentOptions.value = data
+      } catch (e) {
+        console.error('❌ FETCH INSTRUMENTS ERROR', e)
+      }
+    }
+
+    fetchInstruments()
 
     function submit() {
       router.post('/post', form.value)
@@ -28,45 +50,46 @@ export default {
 
     return {
       form,
-      submit
+      submit,
+      instrumentOptions,
+      sheets: props.sheets
     }
   }
 }
+
 </script>
 
 <template>
   <AppLayout>
     <section class="container">
       <h1>Partitions</h1>
-      <div v-for="sheet in sheets" :key="sheet.id" class="sheets-blocks">
-        <Link :href="`/sheet/${sheet.id}`" class="sheet-card">
-          <p>{{ sheet.name }}</p>
-          <img class="sheet-image" :src="sheet.link" alt="">
-        </Link>
+      <div class="sheets-list">
+        <div v-for="sheet in sheets" :key="sheet.id" class="sheet-card">
+          <h2>{{ sheet.name }}</h2>
+          <p>Instrument: {{ sheet.instrument_name || 'Aucun' }}</p>
+          <a :href="sheet.link" target="_blank">View Sheet</a>
+        </div>
       </div>
     </section>
-    <label for="name">Name: </label>
-    <input id="name" type="text" v-model="form.name">
-    <label for="name">Link: </label>
-    <input id="name" type="text" v-model="form.link">
-    <label for="name">Instrument: </label>
-    <select id="name" v-model="form.instrument_id">
-        <option value="1">Guitare</option>
-        <option value="2">Piano</option>
-        <option value="3">Batterie</option>
-        <option value="4">Violon</option>
-        <option value="5">Saxophone</option>
-        <option value="6">Flûte</option>
-        <option value="7">Contrebasse</option>
-        <option value="8">Clarinette</option>
-        <option value="9">Trompette</option>
-        <option value="10">Harpe</option>
-    </select>
-    <button @click="submit">Submit</button>
+
+    <div class="form">
+      <label for="sheetName">Name: </label>
+      <input id="sheetName" type="text" v-model="form.name" />
+
+      <label for="sheetLink">Link: </label>
+      <input id="sheetLink" type="text" v-model="form.link" />
+
+      <label for="sheetInstrument">Instrument: </label>
+      <select id="sheetInstrument" v-model="form.instrument_id">
+        <option value="">Aucun instrument</option>
+        <option v-for="instr in instrumentOptions" :key="instr.id" :value="instr.id">
+          {{ instr.name }}
+        </option>
+      </select>
+      <label for="sheetComposer">Composer: </label>
+      <input id="sheetComposer" type="text" v-model="form.composer" />
+
+      <button @click="submit">Submit</button>
+    </div>
   </AppLayout>
 </template>
-
-
-<style>
-
-</style>
