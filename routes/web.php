@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HistoriqueController;
 use App\Http\Controllers\SheetController;
 
@@ -19,8 +20,7 @@ Route::get('/calendar/sheets', [CalendarController::class, 'listSheets']);
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/post', [SheetController::class, 'store']);
 
-    Route::inertia('dashboard', 'Dashboard')->name('dashboard');
-
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::inertia('calendar', 'Calendar')->name('calendar');
 
@@ -31,7 +31,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/calendar/events', [CalendarController::class, 'store']);
 
     Route::delete('/calendar/events/{id}', [CalendarController::class, 'destroy']);
-    
+
     Route::put('/calendar/events/{id}', [CalendarController::class, 'update']);
 
 
