@@ -55,6 +55,14 @@ const formatDate = (date: string) => {
                     <p v-if="nextTraining.duration" class="text-sm">
                         Durée : {{ nextTraining.duration }} min
                     </p>
+
+                    <p v-if="nextTraining.instrument" class="text-sm">
+                        Instrument : {{ nextTraining.instrument.name }}
+                    </p>
+
+                    <p v-if="nextTraining.sheet" class="text-sm">
+                        Partition : {{ nextTraining.sheet.name }}
+                    </p>
                 </div>
 
                 <div v-else class="rounded-xl border p-4 text-gray-500">
