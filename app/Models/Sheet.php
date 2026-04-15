@@ -19,5 +19,9 @@ class Sheet extends Model
 
     ];
     public $timestamps = false;
-
+    
+    public function instrument()
+    {
+        return $this->belongsTo(GenericInstrument::class);
+    }
 }

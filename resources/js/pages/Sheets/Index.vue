@@ -1,8 +1,10 @@
 <script lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { router, Link } from '@inertiajs/vue3'
 import AppLayout from '@/layouts/AppLayout.vue'
 import sheet from '@/customRoutes/sheet'
+
+
 
 interface Sheet {
   id: number
@@ -10,7 +12,8 @@ interface Sheet {
   link: string
   instrument_name?: string
   composer?: string
-  user_id: number
+  user_id: number,
+  instrument?: { id: number; name: string }
 }
 
 export default {
@@ -25,10 +28,9 @@ export default {
     const form = ref({
       name: '',
       link: '',
-      instrument_id: '',
+      instrument_id: '' as number | '',
       composer: '',
-      undefined
-    })
+      })
 
     const instrumentOptions = ref<{ id: number; name: string }[]>([])
 
@@ -42,7 +44,7 @@ export default {
       }
     }
 
-    fetchInstruments()
+    onMounted(fetchInstruments)
 
     function submit() {
       router.post('/post', form.value)
@@ -66,7 +68,7 @@ export default {
       <div class="sheets-list">
         <div v-for="sheet in sheets" :key="sheet.id" class="sheet-card">
           <h2>{{ sheet.name }}</h2>
-          <p>Instrument: {{ sheet.instrument_name || 'Aucun' }}</p>
+          <p>Instrument: {{ sheet.instrument?.name || 'Aucun' }}</p>
           <a :href="sheet.link" target="_blank">View Sheet</a>
         </div>
       </div>

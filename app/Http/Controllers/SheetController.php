@@ -13,10 +13,9 @@ class SheetController extends Controller
 {
     public function index()
     {
-        $get = Sheet::all();
-
+        $sheets = Sheet::with('instrument')->get();
         return Inertia::render('Sheets/Index', [
-            'sheets' => $get
+            'sheets' => $sheets
         ]);
     }
 
@@ -44,6 +43,7 @@ class SheetController extends Controller
         $instruments = GenericInstrument::all(['id', 'name']);
         return response()->json($instruments);
     }
+    
     
     
 
