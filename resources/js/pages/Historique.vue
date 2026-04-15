@@ -68,31 +68,25 @@ function formatDate(dateStr: string): string {
 </script>
 
 <template>
+
     <Head title="Historique" />
     <AppLayout>
-    <div class="container mx-auto p-4">
-        <h1 class="text-2xl font-bold mb-4">Historique de vos entraînements</h1>
-        <div v-for="(trainings, name) in grouped" :key="name" class="mb-6">
-            <h2 class="text-xl font-semibold mb-2">{{ name }}</h2>
-            <ul class="bg-white shadow rounded-lg divide-y divide-gray-200">
-                <li v-for="training in trainings" :key="training.id" class="p-4 flex justify-between items-center">
-                    <div>
-                        <p class="text-sm text-gray-500">{{ formatDate(training.date_training) }}</p>
-                        <p class="text-sm text-gray-500">Feuille : {{ training.sheet ? sheetsMap[training.sheet.id] : 'Sans feuille' }}</p>
-                        <p class="text-sm text-gray-500">Instrument : {{ instrumentMap[training.instrument_id] || 'Inconnu' }}</p>
-                        <p class="text-sm text-gray-500">Durée : {{ training.duration }} minutes</p>                      
-                    </div>
-                    <a 
-                    v-if="training.link"
-                    :href="training.link" 
-                    target="_blank" 
-                    class="text-blue-500 hover:underline"
-                    >
-                        Voir la feuille
-                    </a>
-                </li>
-            </ul>
+        <div class="container mx-auto p-4">
+            <h1 class="text-2xl font-bold">Historique de vos entraînements</h1>
+            <div v-for="(trainings, name) in grouped" :key="name" style="margin-top: 1em;">
+                <h2 class="text-xl font-semibold mb-2">{{ name }}</h2>
+                <ul class="bg-white shadow rounded-lg space-y space-y-2 p-4">
+                    <li v-for="training in trainings" :key="training.id" class="container mx-auto p-4 bg-gray-50 rounded">
+                            <div class="min-w-0 container mx-auto p-4 bg-gray-50 rounded">
+                                <p class="text-sm text-gray-500">{{ formatDate(training.date_training) }}</p>
+                                <p class="text-sm text-gray-500">Feuille : {{ training.sheet ? sheetsMap[training.sheet.id] : 'Sans feuille' }}</p>
+                                <p class="text-sm text-gray-500">Instrument : {{ instrumentMap[training.instrument_id] || 'Inconnu' }}</p>
+                                <p class="text-sm text-gray-500">Durée : {{ training.duration }} minutes</p>
+                                <p v-if="training.link" class="text-sm text-blue-500"><a :href="training.link" target="_blank">{{ training.link }}</a></p>
+                            </div>
+                    </li>
+                </ul>
+            </div>
         </div>
-    </div>
     </AppLayout>
 </template>

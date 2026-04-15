@@ -14,6 +14,8 @@ use App\Models\GenericInstrument;
 class CalendarController extends BaseController
 {
 
+
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -52,17 +54,28 @@ class CalendarController extends BaseController
 
     public function store(Request $request)
     {
-        $start = Carbon::parse($request->start);
-        $end = Carbon::parse($request->end);
-        $userId = $request->user_id ?? Auth::id();
+        $validated = $request->validate([
+            'title' => 'required|string',
+            'start' => 'required|date',
+            'end' => 'required|date',
+            'instrument' => 'nullable',
+            'link' => 'nullable|string',
+        ]);
 
-        if ($request->user_id != Auth::id()) {
+        $userId = Auth::id();
+
+        // sécurité propre
+        if (!empty($request->user_id) && $request->user_id != $userId) {
             abort(403);
         }
+
+        $start = Carbon::parse($validated['start']);
+        $end = Carbon::parse($validated['end']);
+
         $training = Training::create([
-            'name' => $request->title,
-            'instrument' => $request->instrument,
-            'link' => $request->link,
+            'name' => $validated['title'],
+            'instrument_id' => $validated['instrument'],
+            'link' => $validated['link'],
             'date_training' => $start,
             'duration' => $start->diffInMinutes($end),
             'user_id' => $userId,
@@ -81,29 +94,35 @@ class CalendarController extends BaseController
     public function update(Request $request, $id)
     {
         $training = Training::findOrFail($id);
+
+        if ($training->user_id !== Auth::id()) {
+            abort(403);
+        }
+
         $start = $request->start ? Carbon::parse($request->start) : $training->date_training;
         $end = $request->end ? Carbon::parse($request->end) : $training->date_training->copy()->addMinutes($training->duration);
 
         $training->update([
             'name' => $request->title ?? $training->name,
-            'instrument' => $request->instrument ?? $training->instrument,
+            'instrument_id' => $request->instrument ?? $training->instrument_id,
             'link' => $request->link ?? $training->link,
             'date_training' => $start,
             'duration' => $start->diffInMinutes($end),
         ]);
-        if ($training->user_id != Auth::id()) {
-            abort(403);
-        }
+
         return response()->json(['success' => true]);
     }
 
     public function destroy($id)
     {
         $training = Training::findOrFail($id);
-        $training->delete();
-        if ($training->user_id != Auth::id()) {
+
+        if ($training->user_id !== Auth::id()) {
             abort(403);
         }
+
+        $training->delete();
+
         return response()->json(['success' => true]);
     }
 
