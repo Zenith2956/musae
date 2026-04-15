@@ -24,4 +24,12 @@ class Training extends Model
         'date_training' => 'datetime',
     ];
     
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+    public function sheet()
+    {
+        return $this->belongsTo(Sheet::class);
+    }
 }

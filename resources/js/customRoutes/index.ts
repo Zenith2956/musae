@@ -448,6 +448,10 @@ calendar.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     
     calendar.form = calendarForm
 
+
+
+
+
     /**
 * @see \Inertia\Controller::__invoke
  * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
@@ -526,3 +530,88 @@ library.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
     
     library.form = libraryForm
+
+
+
+
+
+
+    
+    /**
+* @see \Inertia\Controller::__invoke
+ * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
+ * @route '/historique'
+ */
+export const historique = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: historique.url(options),
+    method: 'get',
+})
+
+historique.definition = {
+    methods: ["get","head"],
+    url: '/historique',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \Inertia\Controller::__invoke
+ * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
+ * @route '/historique'
+ */
+historique.url = (options?: RouteQueryOptions) => {
+    return historique.definition.url + queryParams(options)
+}
+
+/**
+* @see \Inertia\Controller::__invoke
+ * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
+ * @route '/historique'
+ */
+historique.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: historique.url(options),
+    method: 'get',
+})
+/**
+* @see \Inertia\Controller::__invoke
+ * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
+ * @route '/historique'
+ */
+historique.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: historique.url(options),
+    method: 'head',
+})
+
+    /**
+* @see \Inertia\Controller::__invoke
+ * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
+ * @route '/historique'
+ */
+    const historiqueForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: historique.url(options),
+        method: 'get',
+    })
+
+            /**
+* @see \Inertia\Controller::__invoke
+ * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
+ * @route '/historique'
+ */
+        historiqueForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: historique.url(options),
+            method: 'get',
+        })
+            /**
+* @see \Inertia\Controller::__invoke
+ * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
+ * @route '/historique'
+ */
+        historiqueForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: historique.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    historique.form = historiqueForm
