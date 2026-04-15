@@ -15,6 +15,8 @@ interface Event {
   title: string
   instrument_id?: number | null
   instrument?: string | null
+  sheet_id?: number | null
+  sheet?: string | null
   link?: string
   start: Date
   end: Date
@@ -22,6 +24,18 @@ interface Event {
 
 const page = usePage<{ currentUserId: number }>()
 const currentUserId = page.props.currentUserId
+
+
+const sheetOptions = ref<{ id: number, name: string }[]>([])
+
+const fetchSheets = async () => {
+  const res = await fetch('/calendar/sheets')
+  const data = await res.json()
+  sheetOptions.value = data
+}
+
+fetchSheets()
+
 
 // -------- State --------
 const events = ref<Event[]>([])
@@ -57,6 +71,8 @@ const fetchEvents = async (start: Date, end: Date) => {
     title: e.title,
     instrument_id: e.instrument_id,
     instrument: e.instrument,
+    sheet_id: e.sheet_id,
+    sheet: e.sheet,
     link: e.link,
     start: new Date(e.start),
     end: new Date(e.end),
@@ -85,6 +101,7 @@ const onEventCreate = ({ event }: any) => {
     title: '',
     instrument_id: null,
     link: '',
+    sheet_id: null,
     start: new Date(event?.start ?? Date.now()),
     end: new Date(event?.end ?? Date.now())
   }
@@ -126,6 +143,7 @@ const saveEvent = async () => {
   const payload = {
     title: editingEvent.value.title,
     instrument_id: editingEvent.value.instrument_id ?? null,
+    sheet_id: editingEvent.value.sheet_id ?? null,
     link: editingEvent.value.link,
     start: editingEvent.value.start.toISOString(),
     end: editingEvent.value.end.toISOString(),
@@ -156,6 +174,8 @@ const saveEvent = async () => {
       title: data.title,
       instrument_id: data.instrument_id,
       instrument: data.instrument,
+      sheet_id: data.sheet_id,
+      sheet: data.sheet,
       link: data.link,
       start: new Date(data.start),
       end: new Date(data.end),
@@ -169,7 +189,7 @@ const saveEvent = async () => {
 
 
 const updateEvent = async (event: any) => {
-  
+
   if (!event.id) return
 
   const payload = {
@@ -178,7 +198,8 @@ const updateEvent = async (event: any) => {
     link: event.link,
     start: event.start.toISOString(),
     end: event.end.toISOString(),
-    user_id: currentUserId
+    user_id: currentUserId,
+    sheet_id: event.sheet_id || null
   }
 
   const res = await fetch(`/calendar/events/${event.id}`, {
@@ -235,28 +256,15 @@ const cancelDialog = () => {
   <Head title="Calendar" />
   <AppLayout>
     <div class="p-4">
-      <vue-cal
-      :events="events"
-      :drag-to-create-event="false"
-      :resizable-events="true"
-      :drag-and-drop="true"
-      @event-drop="onEventChange"
-      @event-resize="onEventChange"
-      :time-from="8 * 60"
-      :time-to="21 * 60"
-      :snap-to-interval="5"
-      events-on-month-view
-      :editable-events="true"
-      @ready="onReady"
-      @view-change="onViewChange"
-      @event-create="onEventCreate"
-      @event-click="openDialog"
-      @event-change="onEventChange"/>
+      <vue-cal :events="events" :drag-to-create-event="false" :resizable-events="true" :drag-and-drop="true"
+        @event-drop="onEventChange" @event-resize="onEventChange" :time-from="8 * 60" :time-to="21 * 60"
+        :snap-to-interval="5" events-on-month-view :editable-events="true" @ready="onReady" @view-change="onViewChange"
+        @event-create="onEventCreate" @event-click="openDialog" @event-change="onEventChange" />
 
       <w-dialog v-if="selectedEvent || editingEvent" v-model="showDialog"
         :title="isEditing ? 'Modifier l’événement' : selectedEvent?.title">
         <!-- MODE LECTURE -->
-        <div v-if="!isEditing && selectedEvent" class="space-y-4 pb-6" style="height: 9em; max-height: 50%;">
+        <div v-if="!isEditing && selectedEvent" class="space-y-4 pb-6" style="height: 11em; max-height: 50%;">
 
           <div class="space-y-1">
             <p class="text-sm text-gray-500">Instrument</p>
@@ -271,6 +279,13 @@ const cancelDialog = () => {
               {{ selectedEvent.start.toLocaleString() }}
               <span class="text-gray-400">→</span>
               {{ selectedEvent.end.toLocaleString() }}
+            </p>
+          </div>
+
+          <div class="space-y-1">
+            <p class="text-sm text-gray-500">Partition</p>
+            <p class="text-base font-medium">
+              {{ selectedEvent.sheet || '—' }}
             </p>
           </div>
 
@@ -305,6 +320,20 @@ const cancelDialog = () => {
               <option v-for="instr in instrumentOptions" :key="instr.id" :value="instr.id">
                 {{ instr.name }}
               </option>
+            </select>
+          </div>
+
+          <div class="space-y-1">
+            <label class="text-sm text-gray-500">Partition</label>
+            <select v-model="editingEvent.sheet_id"
+              class="w-full border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+
+              <option value="">Aucune partition</option>
+
+              <option v-for="sheet in sheetOptions" :key="sheet.id" :value="sheet.id">
+                {{ sheet.name }}
+              </option>
+
             </select>
           </div>
 

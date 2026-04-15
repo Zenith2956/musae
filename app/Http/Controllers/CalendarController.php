@@ -10,6 +10,7 @@ use App\Http\Controllers\BaseController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 use App\Models\GenericInstrument;
+use App\Models\Sheet;
 use Illuminate\Support\Facades\Date;
 
 class CalendarController extends BaseController
@@ -42,7 +43,7 @@ class CalendarController extends BaseController
             ? Carbon::parse($request->end)
             : now()->endOfMonth();
 
-        $trainings = Training::with('instrument')
+        $trainings = Training::with(['instrument', 'sheet'])
             ->where('user_id', $userId)
             ->where(function ($q) use ($start, $end) {
                 $q->whereBetween('date_training', [$start, $end])
@@ -55,7 +56,9 @@ class CalendarController extends BaseController
                 'id' => $t->id,
                 'title' => $t->name,
                 'instrument_id' => $t->instrument_id,
-                'instrument' => $t->instrument?->name, // 👈 IMPORTANT
+                'instrument' => $t->instrument?->name,
+                'sheet_id' => $t->sheet_id,
+                'sheet' => $t->sheet?->name,
                 'link' => $t->link,
                 'start' => $t->date_training->toIso8601String(),
                 'end' => $t->date_training->copy()->addMinutes($t->duration)->toIso8601String(),
@@ -71,6 +74,8 @@ class CalendarController extends BaseController
             'end' => 'required|date',
             'instrument_id' => 'nullable|integer',
             'link' => 'nullable|string',
+            'sheet_id' => 'nullable|integer',
+
         ]);
 
         $userId = Auth::id();
@@ -82,6 +87,7 @@ class CalendarController extends BaseController
             'name' => $validated['title'],
             'instrument_id' => $validated['instrument_id'],
             'link' => $validated['link'],
+            'sheet_id' => $validated['sheet_id'],
             'date_training' => $start,
             'end_training' => $end,
             'duration' => $start->diffInMinutes($end),
@@ -107,11 +113,12 @@ class CalendarController extends BaseController
             'name' => $request->title ?? $training->name,
             'instrument_id' => $request->instrument_id ?? $training->instrument_id,
             'link' => $request->link ?? $training->link,
+            'sheet_id' => $request->sheet_id ?? $training->sheet_id,
             'date_training' => $start,
             'end_training' => $end,
             'duration' => $start->diffInMinutes($end),]);
 
-        return response()->json($this->formatEvent($training->fresh('instrument')));
+        return response()->json($this->formatEvent($training->fresh(['instrument', 'sheet'])));
     }
 
     public function destroy($id)
@@ -133,6 +140,12 @@ class CalendarController extends BaseController
         return response()->json($instruments);
     }
 
+    public function listSheets()
+{
+    $sheets = Sheet::select('id', 'name')->get();
+    return response()->json($sheets);
+}
+
     private function formatEvent($t)
 {
     return [
@@ -140,6 +153,8 @@ class CalendarController extends BaseController
         'title' => $t->name,
         'instrument_id' => $t->instrument_id,
         'instrument' => $t->instrument?->name,
+        'sheet_id' => $t->sheet_id,
+        'sheet' => $t->sheet?->name,
         'link' => $t->link,
         'start' => $t->date_training->toIso8601String(),
         'end' => $t->end_training->toIso8601String(),

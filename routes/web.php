@@ -14,6 +14,7 @@ Route::get('/calendar/events', [CalendarController::class, 'index']);
 Route::put('/calendar/events/{id}', [CalendarController::class, 'update']);
 Route::post('/calendar/events', [CalendarController::class, 'store']);
 Route::delete('/calendar/events/{id}', [CalendarController::class, 'destroy']);
+Route::get('/calendar/sheets', [CalendarController::class, 'listSheets']);
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/post', [SheetController::class, 'store']);
