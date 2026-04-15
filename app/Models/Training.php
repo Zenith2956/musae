@@ -19,8 +19,9 @@ class Training extends Model
         'user_id',
         'sheet_id'
     ];
-        protected $casts = [
+    protected $casts = [
         'date_training' => 'datetime',
+        'end_training' => 'datetime',
     ];
     
     public function user()
@@ -30,5 +31,9 @@ class Training extends Model
     public function sheet()
     {
         return $this->belongsTo(Sheet::class);
+    }
+    public function instrument()
+    {
+        return $this->belongsTo(GenericInstrument::class, 'instrument_id');
     }
 }

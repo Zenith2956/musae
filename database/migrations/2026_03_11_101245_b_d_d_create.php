@@ -53,6 +53,7 @@ return new class extends Migration
             $table->id();
             $table->string('name', 50);
             $table->dateTime('date_training');
+            $table->dateTime('end_training')->nullable();
             $table->integer('duration');
             $table->foreignId('training_media_id')->nullable()->constrained('training_medias');
             $table->foreignId('user_id')->constrained('users');

@@ -10,6 +10,7 @@ use App\Http\Controllers\BaseController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 use App\Models\GenericInstrument;
+use Illuminate\Support\Facades\Date;
 
 class CalendarController extends BaseController
 {
@@ -32,22 +33,32 @@ class CalendarController extends BaseController
     public function events(Request $request)
     {
         $userId = Auth::id();
-        $start = $request->start ? Carbon::parse($request->start) : now()->startOfMonth();
-        $end = $request->end ? Carbon::parse($request->end) : now()->endOfMonth();
 
-        $trainings = Training::where('user_id', $userId)
-            ->whereDate('date_training', '>=', $start)
-            ->whereDate('date_training', '<=', $end)
+        $start = $request->start
+            ? Carbon::parse($request->start)
+            : now()->startOfMonth();
+
+        $end = $request->end
+            ? Carbon::parse($request->end)
+            : now()->endOfMonth();
+
+        $trainings = Training::with('instrument')
+            ->where('user_id', $userId)
+            ->where(function ($q) use ($start, $end) {
+                $q->whereBetween('date_training', [$start, $end])
+                ->orWhereBetween('end_training', [$start, $end]);
+            })
             ->get();
 
         return response()->json(
             $trainings->map(fn($t) => [
                 'id' => $t->id,
                 'title' => $t->name,
-                'instrument' => $t->instrument,
+                'instrument_id' => $t->instrument_id,
+                'instrument' => $t->instrument?->name, // 👈 IMPORTANT
                 'link' => $t->link,
-                'start' => Carbon::parse($t->date_training)->toIso8601String(),
-                'end' => Carbon::parse($t->date_training)->addMinutes($t->duration ?? 0)->toIso8601String(),
+                'start' => $t->date_training->toIso8601String(),
+                'end' => $t->date_training->copy()->addMinutes($t->duration)->toIso8601String(),
             ])
         );
     }
@@ -58,59 +69,49 @@ class CalendarController extends BaseController
             'title' => 'required|string',
             'start' => 'required|date',
             'end' => 'required|date',
-            'instrument' => 'nullable',
+            'instrument_id' => 'nullable|integer',
             'link' => 'nullable|string',
         ]);
 
         $userId = Auth::id();
-
-        // sécurité propre
-        if (!empty($request->user_id) && $request->user_id != $userId) {
-            abort(403);
-        }
 
         $start = Carbon::parse($validated['start']);
         $end = Carbon::parse($validated['end']);
 
         $training = Training::create([
             'name' => $validated['title'],
-            'instrument_id' => $validated['instrument'],
+            'instrument_id' => $validated['instrument_id'],
             'link' => $validated['link'],
             'date_training' => $start,
+            'end_training' => $end,
             'duration' => $start->diffInMinutes($end),
             'user_id' => $userId,
         ]);
 
-        return response()->json([
-            'id' => $training->id,
-            'title' => $training->name,
-            'instrument' => $training->instrument,
-            'link' => $training->link,
-            'start' => $training->date_training->toIso8601String(),
-            'end' => $training->date_training->copy()->addMinutes($training->duration)->toIso8601String(),
-        ]);
+        return response()->json($this->formatEvent($training));
     }
 
     public function update(Request $request, $id)
     {
+        Log::info('UPDATE EVENT', $request->all());
         $training = Training::findOrFail($id);
 
         if ($training->user_id !== Auth::id()) {
             abort(403);
         }
 
-        $start = $request->start ? Carbon::parse($request->start) : $training->date_training;
-        $end = $request->end ? Carbon::parse($request->end) : $training->date_training->copy()->addMinutes($training->duration);
+        $start = Carbon::parse($request->start ?? $training->date_training);
+        $end = Carbon::parse($request->end ?? $training->date_training->copy()->addMinutes($training->duration));
 
         $training->update([
             'name' => $request->title ?? $training->name,
-            'instrument_id' => $request->instrument ?? $training->instrument_id,
+            'instrument_id' => $request->instrument_id ?? $training->instrument_id,
             'link' => $request->link ?? $training->link,
             'date_training' => $start,
-            'duration' => $start->diffInMinutes($end),
-        ]);
+            'end_training' => $end,
+            'duration' => $start->diffInMinutes($end),]);
 
-        return response()->json(['success' => true]);
+        return response()->json($this->formatEvent($training->fresh('instrument')));
     }
 
     public function destroy($id)
@@ -131,4 +132,17 @@ class CalendarController extends BaseController
         $instruments = GenericInstrument::all(['id', 'name']);
         return response()->json($instruments);
     }
+
+    private function formatEvent($t)
+{
+    return [
+        'id' => $t->id,
+        'title' => $t->name,
+        'instrument_id' => $t->instrument_id,
+        'instrument' => $t->instrument?->name,
+        'link' => $t->link,
+        'start' => $t->date_training->toIso8601String(),
+        'end' => $t->end_training->toIso8601String(),
+    ];
+}
 }

@@ -13,11 +13,11 @@ addDatePrototypes()
 interface Event {
   id?: string
   title: string
-  instrument?: string
+  instrument_id?: number | null
+  instrument?: string | null
   link?: string
   start: Date
   end: Date
-  user_id?: number
 }
 
 const page = usePage<{ currentUserId: number }>()
@@ -49,20 +49,18 @@ const startEdit = () => {
 
 // -------- Fetch Events --------
 const fetchEvents = async (start: Date, end: Date) => {
-  try {
-    const res = await fetch(`/calendar/events?start=${start.toISOString()}&end=${end.toISOString()}&user_id=${currentUserId}`)
-    const data = await res.json()
-    events.value = data.map((e: any) => ({
-      id: String(e.id),
-      title: e.title,
-      instrument: e.instrument || '',
-      link: e.link || '',
-      start: new Date(e.start),
-      end: new Date(e.end),
-    }))
-  } catch (e) {
-    console.error('❌ FETCH ERROR', e)
-  }
+  const res = await fetch(`/calendar/events?start=${start.toISOString()}&end=${end.toISOString()}`)
+  const data = await res.json()
+
+  events.value = data.map((e: any) => ({
+    id: String(e.id),
+    title: e.title,
+    instrument_id: e.instrument_id,
+    instrument: e.instrument,
+    link: e.link,
+    start: new Date(e.start),
+    end: new Date(e.end),
+  }))
 }
 
 const instrumentOptions = ref<{ id: number, name: string }[]>([])
@@ -85,7 +83,7 @@ const onViewChange = (view: any) => { currentView.value = view; fetchEvents(view
 const onEventCreate = ({ event }: any) => {
   editingEvent.value = {
     title: '',
-    instrument: '',
+    instrument_id: null,
     link: '',
     start: new Date(event?.start ?? Date.now()),
     end: new Date(event?.end ?? Date.now())
@@ -96,119 +94,111 @@ const onEventCreate = ({ event }: any) => {
 }
 
 const onEventChange = async ({ event }: any) => {
-  if (!event.id) return
   try {
-    const payload = {
-      title: event.title,
-      instrument: event.instrument,
-      link: event.link,
-      start: event.start.toISOString(),
-      end: event.end.toISOString(),
-      user_id: currentUserId
-    }
+    // 1. update backend
+    await updateEvent(event)
 
-    const res = await fetch(`/calendar/events/${event.id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? ''
-      },
-      body: JSON.stringify(payload)
-    })
+    // 2. refresh calendrier (source de vérité)
+    await fetchEvents(currentView.value.start, currentView.value.end)
 
-    const data = await res.json()
-    if (data.success) {
-      const idx = events.value.findIndex(e => e.id === event.id)
-      if (idx !== -1) {
-        events.value[idx] = {
-          ...event,
-          start: new Date(event.start),
-          end: new Date(event.end)
-        }
-      }
-    }
   } catch (err) {
-    console.error('❌ DRAG/RESIZE ERROR', err)
+    console.error('❌ UPDATE EVENT FAILED', err)
+
+    // rollback propre
+    await fetchEvents(currentView.value.start, currentView.value.end)
   }
 }
+
+
 
 // -------- Save Event --------
 const saveEvent = async () => {
   if (!editingEvent.value) return
-  console.log('editingEvent:', editingEvent.value)
-  try {
-    console.log('STEP 1')
 
-    const safeDate = (d: any) => {
-      if (!d) throw new Error('Missing date')
+  const isUpdate = !!editingEvent.value.id
 
-      const date = d instanceof Date ? d : new Date(d)
+  const url = isUpdate
+    ? `/calendar/events/${editingEvent.value.id}`
+    : `/calendar/events`
 
-      if (isNaN(date.getTime())) {
-        console.error('INVALID DATE VALUE:', d)
-        throw new Error('Invalid date')
-      }
+  const method = isUpdate ? 'PUT' : 'POST'
 
-      return date
-    }
+  const payload = {
+    title: editingEvent.value.title,
+    instrument_id: editingEvent.value.instrument_id ?? null,
+    link: editingEvent.value.link,
+    start: editingEvent.value.start.toISOString(),
+    end: editingEvent.value.end.toISOString(),
+  }
 
-    console.log('STEP 2')
+  const res = await fetch(url, {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'X-CSRF-TOKEN': document
+        .querySelector('meta[name="csrf-token"]')
+        ?.getAttribute('content') ?? ''
+    },
+    body: JSON.stringify(payload)
+  })
 
-    const normalizeDate = (d: any) => {
-      const date = new Date(d)
-      return isNaN(date.getTime()) ? new Date() : date
-    }
+  const data = await res.json()
 
-    const payload = {
-      title: editingEvent.value.title,
-      instrument: editingEvent.value.instrument,
-      link: editingEvent.value.link,
-      start: normalizeDate(editingEvent.value.start).toISOString(),
-      end: normalizeDate(editingEvent.value.end).toISOString(),
-      user_id: currentUserId
-    }
-
-    console.log('STEP 3 payload', payload)
-
-    const res = await fetch(`/calendar/events`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'X-CSRF-TOKEN': document
-          .querySelector('meta[name="csrf-token"]')
-          ?.getAttribute('content') ?? ''
-      },
-      body: JSON.stringify(payload)
+  if (isUpdate) {
+    await updateEvent({
+      ...editingEvent.value,
+      id: editingEvent.value.id
     })
-
-    console.log('STEP 4 status', res.status)
-
-    const text = await res.text()
-    console.log('STEP 5 response', text)
-
-    if (!res.ok) {
-      throw new Error(text)
-    }
-
-    const data = JSON.parse(text)
-
+  } else {
     events.value.push({
       id: String(data.id),
       title: data.title,
-      instrument: data.instrument || '',
-      link: data.link || '',
+      instrument_id: data.instrument_id,
+      instrument: data.instrument,
+      link: data.link,
       start: new Date(data.start),
-      end: new Date(data.end)
+      end: new Date(data.end),
     })
-
-    showDialog.value = false
-    editingEvent.value = null
-    isEditing.value = false
-
-  } catch (err) {
-    console.error('SAVE FAILED:', err)
   }
+
+  showDialog.value = false
+  editingEvent.value = null
+  isEditing.value = false
+}
+
+
+const updateEvent = async (event: any) => {
+  
+  if (!event.id) return
+
+  const payload = {
+    title: event.title,
+    instrument_id: event.instrument_id || null,
+    link: event.link,
+    start: event.start.toISOString(),
+    end: event.end.toISOString(),
+    user_id: currentUserId
+  }
+
+  const res = await fetch(`/calendar/events/${event.id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'X-CSRF-TOKEN':
+        document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? ''
+    },
+    body: JSON.stringify(payload)
+  })
+
+  const data = await res.json()
+
+  if (!res.ok || data.errors) {
+    throw new Error(data.message || 'Validation error')
+  }
+
+  return data
 }
 
 // -------- Delete Event --------
@@ -235,6 +225,7 @@ const cancelDialog = () => {
   showDialog.value = false
   editingEvent.value = null
   isEditing.value = false
+
 }
 
 </script>
@@ -244,39 +235,104 @@ const cancelDialog = () => {
   <Head title="Calendar" />
   <AppLayout>
     <div class="p-4">
-      <vue-cal :events="events" :time-from="8 * 60" :time-to="21 * 60" :snap-to-interval="5" events-on-month-view
-        :editable-events="true" @ready="onReady" @view-change="onViewChange" @event-create="onEventCreate"
-        @event-click="openDialog" @event-change="onEventChange" />
+      <vue-cal
+      :events="events"
+      :drag-to-create-event="false"
+      :resizable-events="true"
+      :drag-and-drop="true"
+      @event-drop="onEventChange"
+      @event-resize="onEventChange"
+      :time-from="8 * 60"
+      :time-to="21 * 60"
+      :snap-to-interval="5"
+      events-on-month-view
+      :editable-events="true"
+      @ready="onReady"
+      @view-change="onViewChange"
+      @event-create="onEventCreate"
+      @event-click="openDialog"
+      @event-change="onEventChange"/>
 
       <w-dialog v-if="selectedEvent || editingEvent" v-model="showDialog"
-        :title="isEditing ? 'Modifier' : selectedEvent?.title" width="400">
-        <!-- Lecture -->
-        <div v-if="!isEditing && selectedEvent">
-          <p>{{ selectedEvent.instrument }}</p>
-          <p>{{ selectedEvent.start.toLocaleString() }} - {{ selectedEvent.end.toLocaleString() }}</p>
-          <p v-if="selectedEvent.link"><a :href="selectedEvent.link" target="_blank">{{ selectedEvent.link }}</a></p>
-          <div class="flex justify-end gap-2 mt-4">
-            <button @click="startEdit" class="px-3 py-1 bg-blue-500 text-white rounded">Modifier</button>
+        :title="isEditing ? 'Modifier l’événement' : selectedEvent?.title">
+        <!-- MODE LECTURE -->
+        <div v-if="!isEditing && selectedEvent" class="space-y-4 pb-6" style="height: 9em; max-height: 50%;">
+
+          <div class="space-y-1">
+            <p class="text-sm text-gray-500">Instrument</p>
+            <p class="text-base font-medium">
+              {{ selectedEvent.instrument || '—' }}
+            </p>
+          </div>
+
+          <div class="space-y-1">
+            <p class="text-sm text-gray-500">Horaire</p>
+            <p class="text-base">
+              {{ selectedEvent.start.toLocaleString() }}
+              <span class="text-gray-400">→</span>
+              {{ selectedEvent.end.toLocaleString() }}
+            </p>
+          </div>
+
+          <div v-if="selectedEvent.link" class="space-y-1">
+            <p class="text-sm text-gray-500">Lien</p>
+            <a :href="selectedEvent.link" target="_blank" class="text-blue-600 hover:underline break-all">
+              {{ selectedEvent.link }}
+            </a>
+          </div>
+
+          <div class="flex justify-end mt-10">
+            <button @click="startEdit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition">
+              Modifier
+            </button>
           </div>
         </div>
 
-        <!-- Edition -->
-        <div v-if="isEditing && editingEvent" class="flex flex-col gap-2">
-          <input v-model="editingEvent.title" placeholder="Nom" class="border p-2 rounded" />
-          <select v-model="editingEvent.instrument" class="border p-2 rounded">
-            <option value="">Aucun instrument</option>
-            <option v-for="instr in instrumentOptions" :key="instr.id" :value="instr.id">{{ instr.name }}</option>
-          </select>
+        <!-- MODE ÉDITION -->
+        <div v-if="isEditing && editingEvent" class="space-y-4">
 
-          <input v-model="editingEvent.link" placeholder="Lien" class="border p-2 rounded" />
-          <div class="flex justify-end gap-2 mt-4">
+          <div class="space-y-1">
+            <label class="text-sm text-gray-500">Titre</label>
+            <input v-model="editingEvent.title" placeholder="Nom de l’événement"
+              class="w-full border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+          </div>
+
+          <div class="space-y-1">
+            <label class="text-sm text-gray-500">Instrument</label>
+            <select v-model="editingEvent.instrument_id"
+              class="w-full border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+              <option value="">Aucun instrument</option>
+              <option v-for="instr in instrumentOptions" :key="instr.id" :value="instr.id">
+                {{ instr.name }}
+              </option>
+            </select>
+          </div>
+
+          <div class="space-y-1">
+            <label class="text-sm text-gray-500">Lien</label>
+            <input v-model="editingEvent.link" placeholder="https://..."
+              class="w-full border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+          </div>
+
+          <div class="flex justify-between pt-4 border-t">
+
             <button v-if="editingEvent.id" @click="deleteEvent(editingEvent.id)"
-              class="px-3 py-1 bg-red-500 text-white rounded">
+              class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md transition">
               Supprimer
             </button>
-            <button @click="cancelDialog" class="px-3 py-1 border rounded">Annuler</button>
-            <button @click="saveEvent" class="px-3 py-1 bg-green-500 text-white rounded">Enregistrer</button>
+
+            <div class="flex gap-2 ml-auto">
+              <button @click="cancelDialog" class="px-4 py-2 border rounded-md hover:bg-gray-50 transition">
+                Annuler
+              </button>
+
+              <button @click="saveEvent"
+                class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md transition">
+                Enregistrer
+              </button>
+            </div>
           </div>
+
         </div>
       </w-dialog>
     </div>
