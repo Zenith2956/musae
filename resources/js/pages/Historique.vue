@@ -37,7 +37,7 @@ const instrumentMap = computed(() => {
     });
     return map;
 });
-
+ 
 const sheetsMap = computed(() => {
     const map: Record<number, string> = {};
     Array.isArray(props.sheets) && props.sheets.forEach(s => {
