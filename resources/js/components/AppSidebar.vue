@@ -14,29 +14,34 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard, calendar, library, historique } from '@/customRoutes';
+import { dashboard, calendar, library, historique, messagerie } from '@/customRoutes';
 import type { NavItem } from '@/types';
  
-const mainNavItems: NavItem[] = [
+    const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
-        href: dashboard(),
+        href: dashboard.url(),
         icon: LayoutGrid,
     },
-        {
+    {
         title: 'Calendar',
-        href: calendar(),
+        href: calendar.url(),
         icon: BookOpen,
     },
     {
         title: 'Library',
-        href: library(),
+        href: library.url(),
         icon: FolderGit2,
     },
     {
         title: 'Historique',
-        href: historique(),
+        href: historique.url(),
         icon: Hourglass,
+    },
+    {
+        title: 'Messagerie',
+        href: messagerie.url(),
+        icon: BookOpen,
     },
 ];
 

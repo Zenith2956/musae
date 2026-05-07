@@ -6,6 +6,7 @@ use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HistoriqueController;
 use App\Http\Controllers\SheetController;
+use App\Http\Controllers\MessagerieController;
 
 Route::inertia('/', 'Welcome', [
     'canRegister' => Features::enabled(Features::registration()),
@@ -45,6 +46,22 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/historique', [HistoriqueController::class, 'index'])->name('historique');
 });
+Route::middleware(['auth'])->prefix('messagerie')->name('messagerie.')->group(function () {
+
+    Route::get('/', [MessagerieController::class, 'index'])->name('index');
+
+    Route::post('/', [MessagerieController::class, 'store'])->name('store');
+
+    Route::get('/{conversation}', [MessagerieController::class, 'show'])->name('show');
+
+    Route::post('/{conversation}/messages', [MessagerieController::class, 'sendMessage'])->name('messages.store');
+
+    Route::get('/{conversation}/messages', [MessagerieController::class, 'messages'])->name('messages.index');
+
+    Route::delete('/messages/{message}', [MessagerieController::class, 'destroyMessage'])->name('messages.destroy');
+});
+
+
 
 
 

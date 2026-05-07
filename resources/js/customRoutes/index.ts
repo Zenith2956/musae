@@ -1,617 +1,80 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../wayfinder'
-/**
-* @see \Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::login
- * @see vendor/laravel/fortify/src/Http/Controllers/AuthenticatedSessionController.php:47
- * @route '/login'
- */
-export const login = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: login.url(options),
-    method: 'get',
-})
-
-login.definition = {
-    methods: ["get","head"],
-    url: '/login',
-} satisfies RouteDefinition<["get","head"]>
+import {
+    queryParams,
+    type RouteQueryOptions,
+    type RouteDefinition,
+    type RouteFormDefinition
+} from './../wayfinder'
 
 /**
-* @see \Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::login
- * @see vendor/laravel/fortify/src/Http/Controllers/AuthenticatedSessionController.php:47
- * @route '/login'
+ * Générateur générique de routes
  */
-login.url = (options?: RouteQueryOptions) => {
-    return login.definition.url + queryParams(options)
-}
+function createRoute(
+    url: string,
+    methods: readonly string[]
+) {
+    const baseUrl = url
 
-/**
-* @see \Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::login
- * @see vendor/laravel/fortify/src/Http/Controllers/AuthenticatedSessionController.php:47
- * @route '/login'
- */
-login.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: login.url(options),
-    method: 'get',
-})
-/**
-* @see \Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::login
- * @see vendor/laravel/fortify/src/Http/Controllers/AuthenticatedSessionController.php:47
- * @route '/login'
- */
-login.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
-    url: login.url(options),
-    method: 'head',
-})
+    const route = ((options?: RouteQueryOptions) => ({
+        url: route.url(options),
+        method: methods[0],
+    })) as any
 
-    /**
-* @see \Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::login
- * @see vendor/laravel/fortify/src/Http/Controllers/AuthenticatedSessionController.php:47
- * @route '/login'
- */
-    const loginForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-        action: login.url(options),
-        method: 'get',
+    // Définition
+    route.definition = {
+        methods,
+        url: baseUrl,
+    } satisfies RouteDefinition<typeof methods>
+
+    // URL builder
+    route.url = (options?: RouteQueryOptions) =>
+        baseUrl + queryParams(options)
+
+    // Méthodes HTTP (get, post, head…)
+    methods.forEach(method => {
+        route[method] = (options?: RouteQueryOptions) => ({
+            url: route.url(options),
+            method,
+        })
     })
 
-            /**
-* @see \Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::login
- * @see vendor/laravel/fortify/src/Http/Controllers/AuthenticatedSessionController.php:47
- * @route '/login'
- */
-        loginForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: login.url(options),
-            method: 'get',
-        })
-            /**
-* @see \Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::login
- * @see vendor/laravel/fortify/src/Http/Controllers/AuthenticatedSessionController.php:47
- * @route '/login'
- */
-        loginForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: login.url({
+    // Form builder
+    const form = (options?: RouteQueryOptions) => ({
+        action: route.url(options),
+        method: methods[0],
+    })
+
+    // Form.get / Form.post / Form.head
+    methods.forEach(method => {
+        form[method] = (options?: RouteQueryOptions) => ({
+            action: route.url(
+                method === 'head'
+                    ? {
                         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'HEAD',
+                            _method: method.toUpperCase(),
                             ...(options?.query ?? options?.mergeQuery ?? {}),
                         }
-                    }),
-            method: 'get',
+                    }
+                    : options
+            ),
+            method: methods[0],
         })
-    
-    login.form = loginForm
-/**
-* @see \Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::logout
- * @see vendor/laravel/fortify/src/Http/Controllers/AuthenticatedSessionController.php:100
- * @route '/logout'
- */
-export const logout = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
-    url: logout.url(options),
-    method: 'post',
-})
+    })
 
-logout.definition = {
-    methods: ["post"],
-    url: '/logout',
-} satisfies RouteDefinition<["post"]>
+    route.form = form
 
-/**
-* @see \Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::logout
- * @see vendor/laravel/fortify/src/Http/Controllers/AuthenticatedSessionController.php:100
- * @route '/logout'
- */
-logout.url = (options?: RouteQueryOptions) => {
-    return logout.definition.url + queryParams(options)
+    return route
 }
 
 /**
-* @see \Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::logout
- * @see vendor/laravel/fortify/src/Http/Controllers/AuthenticatedSessionController.php:100
- * @route '/logout'
+ * Déclaration de toutes les routes
+ * (1 ligne = 1 route)
  */
-logout.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
-    url: logout.url(options),
-    method: 'post',
-})
-
-    /**
-* @see \Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::logout
- * @see vendor/laravel/fortify/src/Http/Controllers/AuthenticatedSessionController.php:100
- * @route '/logout'
- */
-    const logoutForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-        action: logout.url(options),
-        method: 'post',
-    })
-
-            /**
-* @see \Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::logout
- * @see vendor/laravel/fortify/src/Http/Controllers/AuthenticatedSessionController.php:100
- * @route '/logout'
- */
-        logoutForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-            action: logout.url(options),
-            method: 'post',
-        })
-    
-    logout.form = logoutForm
-/**
-* @see \Laravel\Fortify\Http\Controllers\RegisteredUserController::register
- * @see vendor/laravel/fortify/src/Http/Controllers/RegisteredUserController.php:41
- * @route '/register'
- */
-export const register = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: register.url(options),
-    method: 'get',
-})
-
-register.definition = {
-    methods: ["get","head"],
-    url: '/register',
-} satisfies RouteDefinition<["get","head"]>
-
-/**
-* @see \Laravel\Fortify\Http\Controllers\RegisteredUserController::register
- * @see vendor/laravel/fortify/src/Http/Controllers/RegisteredUserController.php:41
- * @route '/register'
- */
-register.url = (options?: RouteQueryOptions) => {
-    return register.definition.url + queryParams(options)
-}
-
-/**
-* @see \Laravel\Fortify\Http\Controllers\RegisteredUserController::register
- * @see vendor/laravel/fortify/src/Http/Controllers/RegisteredUserController.php:41
- * @route '/register'
- */
-register.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: register.url(options),
-    method: 'get',
-})
-/**
-* @see \Laravel\Fortify\Http\Controllers\RegisteredUserController::register
- * @see vendor/laravel/fortify/src/Http/Controllers/RegisteredUserController.php:41
- * @route '/register'
- */
-register.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
-    url: register.url(options),
-    method: 'head',
-})
-
-    /**
-* @see \Laravel\Fortify\Http\Controllers\RegisteredUserController::register
- * @see vendor/laravel/fortify/src/Http/Controllers/RegisteredUserController.php:41
- * @route '/register'
- */
-    const registerForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-        action: register.url(options),
-        method: 'get',
-    })
-
-            /**
-* @see \Laravel\Fortify\Http\Controllers\RegisteredUserController::register
- * @see vendor/laravel/fortify/src/Http/Controllers/RegisteredUserController.php:41
- * @route '/register'
- */
-        registerForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: register.url(options),
-            method: 'get',
-        })
-            /**
-* @see \Laravel\Fortify\Http\Controllers\RegisteredUserController::register
- * @see vendor/laravel/fortify/src/Http/Controllers/RegisteredUserController.php:41
- * @route '/register'
- */
-        registerForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: register.url({
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'HEAD',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'get',
-        })
-    
-    register.form = registerForm
-/**
-* @see \Inertia\Controller::__invoke
- * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
- * @route '/'
- */
-export const home = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: home.url(options),
-    method: 'get',
-})
-
-home.definition = {
-    methods: ["get","head"],
-    url: '/',
-} satisfies RouteDefinition<["get","head"]>
-
-/**
-* @see \Inertia\Controller::__invoke
- * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
- * @route '/'
- */
-home.url = (options?: RouteQueryOptions) => {
-    return home.definition.url + queryParams(options)
-}
-
-/**
-* @see \Inertia\Controller::__invoke
- * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
- * @route '/'
- */
-home.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: home.url(options),
-    method: 'get',
-})
-/**
-* @see \Inertia\Controller::__invoke
- * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
- * @route '/'
- */
-home.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
-    url: home.url(options),
-    method: 'head',
-})
-
-    /**
-* @see \Inertia\Controller::__invoke
- * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
- * @route '/'
- */
-    const homeForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-        action: home.url(options),
-        method: 'get',
-    })
-
-            /**
-* @see \Inertia\Controller::__invoke
- * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
- * @route '/'
- */
-        homeForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: home.url(options),
-            method: 'get',
-        })
-            /**
-* @see \Inertia\Controller::__invoke
- * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
- * @route '/'
- */
-        homeForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: home.url({
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'HEAD',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'get',
-        })
-    
-    home.form = homeForm
-
-
-/**
-* @see \Inertia\Controller::__invoke
- * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
- * @route '/dashboard'
- */
-export const dashboard = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: dashboard.url(options),
-    method: 'get',
-})
-
-dashboard.definition = {
-    methods: ["get","head"],
-    url: '/dashboard',
-} satisfies RouteDefinition<["get","head"]>
-
-/**
-* @see \Inertia\Controller::__invoke
- * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
- * @route '/dashboard'
- */
-dashboard.url = (options?: RouteQueryOptions) => {
-    return dashboard.definition.url + queryParams(options)
-}
-
-/**
-* @see \Inertia\Controller::__invoke
- * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
- * @route '/dashboard'
- */
-dashboard.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: dashboard.url(options),
-    method: 'get',
-})
-/**
-* @see \Inertia\Controller::__invoke
- * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
- * @route '/dashboard'
- */
-dashboard.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
-    url: dashboard.url(options),
-    method: 'head',
-})
-
-    /**
-* @see \Inertia\Controller::__invoke
- * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
- * @route '/dashboard'
- */
-    const dashboardForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-        action: dashboard.url(options),
-        method: 'get',
-    })
-
-            /**
-* @see \Inertia\Controller::__invoke
- * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
- * @route '/dashboard'
- */
-        dashboardForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: dashboard.url(options),
-            method: 'get',
-        })
-            /**
-* @see \Inertia\Controller::__invoke
- * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
- * @route '/dashboard'
- */
-        dashboardForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: dashboard.url({
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'HEAD',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'get',
-        })
-    
-    dashboard.form = dashboardForm
-
-    /**
-* @see \Inertia\Controller::__invoke
- * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
- * @route '/calendar'
- */
-export const calendar = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: calendar.url(options),
-    method: 'get',
-})
-
-calendar.definition = {
-    methods: ["get","head"],
-    url: '/calendar',
-} satisfies RouteDefinition<["get","head"]>
-
-/**
-* @see \Inertia\Controller::__invoke
- * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
- * @route '/calendar'
- */
-calendar.url = (options?: RouteQueryOptions) => {
-    return calendar.definition.url + queryParams(options)
-}
-
-/**
-* @see \Inertia\Controller::__invoke
- * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
- * @route '/calendar'
- */
-calendar.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: calendar.url(options),
-    method: 'get',
-})
-/**
-* @see \Inertia\Controller::__invoke
- * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
- * @route '/calendar'
- */
-calendar.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
-    url: calendar.url(options),
-    method: 'head',
-})
-
-    /**
-* @see \Inertia\Controller::__invoke
- * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
- * @route '/calendar'
- */
-    const calendarForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-        action: calendar.url(options),
-        method: 'get',
-    })
-
-            /**
-* @see \Inertia\Controller::__invoke
- * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
- * @route '/calendar'
- */
-        calendarForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: calendar.url(options),
-            method: 'get',
-        })
-            /**
-* @see \Inertia\Controller::__invoke
- * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
- * @route '/calendar'
- */
-        calendarForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: calendar.url({
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'HEAD',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'get',
-        })
-    
-    calendar.form = calendarForm
-
-
-
-
-
-    /**
-* @see \Inertia\Controller::__invoke
- * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
- * @route '/library'
- */
-export const library = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: library.url(options),
-    method: 'get',
-})
-
-library.definition = {
-    methods: ["get","head"],
-    url: '/library',
-} satisfies RouteDefinition<["get","head"]>
-
-/**
-* @see \Inertia\Controller::__invoke
- * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
- * @route '/library'
- */
-library.url = (options?: RouteQueryOptions) => {
-    return library.definition.url + queryParams(options)
-}
-
-/**
-* @see \Inertia\Controller::__invoke
- * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
- * @route '/library'
- */
-library.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: library.url(options),
-    method: 'get',
-})
-/**
-* @see \Inertia\Controller::__invoke
- * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
- * @route '/library'
- */
-library.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
-    url: library.url(options),
-    method: 'head',
-})
-
-    /**
-* @see \Inertia\Controller::__invoke
- * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
- * @route '/library'
- */
-    const libraryForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-        action: library.url(options),
-        method: 'get',
-    })
-
-            /**
-* @see \Inertia\Controller::__invoke
- * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
- * @route '/library'
- */
-        libraryForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: library.url(options),
-            method: 'get',
-        })
-            /**
-* @see \Inertia\Controller::__invoke
- * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
- * @route '/library'
- */
-        libraryForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: library.url({
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'HEAD',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'get',
-        })
-    
-    library.form = libraryForm
-
-
-
-
-
-
-    
-    /**
-* @see \Inertia\Controller::__invoke
- * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
- * @route '/historique'
- */
-export const historique = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: historique.url(options),
-    method: 'get',
-})
-
-historique.definition = {
-    methods: ["get","head"],
-    url: '/historique',
-} satisfies RouteDefinition<["get","head"]>
-
-/**
-* @see \Inertia\Controller::__invoke
- * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
- * @route '/historique'
- */
-historique.url = (options?: RouteQueryOptions) => {
-    return historique.definition.url + queryParams(options)
-}
-
-/**
-* @see \Inertia\Controller::__invoke
- * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
- * @route '/historique'
- */
-historique.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: historique.url(options),
-    method: 'get',
-})
-/**
-* @see \Inertia\Controller::__invoke
- * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
- * @route '/historique'
- */
-historique.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
-    url: historique.url(options),
-    method: 'head',
-})
-
-    /**
-* @see \Inertia\Controller::__invoke
- * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
- * @route '/historique'
- */
-    const historiqueForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-        action: historique.url(options),
-        method: 'get',
-    })
-
-            /**
-* @see \Inertia\Controller::__invoke
- * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
- * @route '/historique'
- */
-        historiqueForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: historique.url(options),
-            method: 'get',
-        })
-            /**
-* @see \Inertia\Controller::__invoke
- * @see vendor/inertiajs/inertia-laravel/src/Controller.php:13
- * @route '/historique'
- */
-        historiqueForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: historique.url({
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'HEAD',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'get',
-        })
-    
-    historique.form = historiqueForm
+export const login       = createRoute('/login',       ['get', 'head'])
+export const logout      = createRoute('/logout',      ['post'])
+export const register    = createRoute('/register',    ['get', 'head'])
+export const home        = createRoute('/',            ['get', 'head'])
+export const dashboard   = createRoute('/dashboard',   ['get', 'head'])
+export const calendar    = createRoute('/calendar',    ['get', 'head'])
+export const library     = createRoute('/library',     ['get', 'head'])
+export const historique  = createRoute('/historique',  ['get', 'head'])
+export const messagerie  = createRoute('/messagerie',  ['get', 'head'])

@@ -40,6 +40,16 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
+        $user = User::firstOrCreate(
+            ['email' => 'test2@example.com'],
+            [
+                'name' => 'Test User 2',
+                'nickname' => 'testuser2',
+                'password' => bcrypt('123password'),
+                'role_id' => 1,
+            ]
+        );
+
         DB::table('training_medias')->insertOrIgnore([
             ['id' => 1, 'link' => 'https://example.com']
         ]);
