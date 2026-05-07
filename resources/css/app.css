@@ -1,5 +1,4 @@
 @import 'tailwindcss';
-
 @import 'tw-animate-css';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
@@ -11,210 +10,749 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Google Fonts ─────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@900&family=DM+Sans:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@900&family=DM+Sans:wght@400;500;600&display=swap');
+
+/* ── Theme tokens ─────────────────────────────────────────────────── */
 @theme inline {
     --font-sans:
-        Instrument Sans, ui-sans-serif, system-ui, sans-serif,
+        'DM Sans', ui-sans-serif, system-ui, sans-serif,
         'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
         'Noto Color Emoji';
+    --font-display: 'Playfair Display', Georgia, serif;
 
     --radius-lg: var(--radius);
     --radius-md: calc(var(--radius) - 2px);
     --radius-sm: calc(var(--radius) - 4px);
 
-    --color-background: var(--background);
-    --color-foreground: var(--foreground);
-
-    --color-card: var(--card);
-    --color-card-foreground: var(--card-foreground);
-
-    --color-popover: var(--popover);
-    --color-popover-foreground: var(--popover-foreground);
-
-    --color-primary: var(--primary);
-    --color-primary-foreground: var(--primary-foreground);
-
-    --color-secondary: var(--secondary);
-    --color-secondary-foreground: var(--secondary-foreground);
-
-    --color-muted: var(--muted);
-    --color-muted-foreground: var(--muted-foreground);
-
-    --color-accent: var(--accent);
-    --color-accent-foreground: var(--accent-foreground);
-
-    --color-destructive: var(--destructive);
-    --color-destructive-foreground: var(--destructive-foreground);
-
-    --color-border: var(--border);
-    --color-input: var(--input);
-    --color-ring: var(--ring);
-
-    --color-chart-1: var(--chart-1);
-    --color-chart-2: var(--chart-2);
-    --color-chart-3: var(--chart-3);
-    --color-chart-4: var(--chart-4);
-    --color-chart-5: var(--chart-5);
-
-    --color-sidebar: var(--sidebar-background);
-    --color-sidebar-foreground: var(--sidebar-foreground);
-    --color-sidebar-primary: var(--sidebar-primary);
+    --color-background:            var(--background);
+    --color-foreground:            var(--foreground);
+    --color-card:                  var(--card);
+    --color-card-foreground:       var(--card-foreground);
+    --color-popover:               var(--popover);
+    --color-popover-foreground:    var(--popover-foreground);
+    --color-primary:               var(--primary);
+    --color-primary-foreground:    var(--primary-foreground);
+    --color-secondary:             var(--secondary);
+    --color-secondary-foreground:  var(--secondary-foreground);
+    --color-muted:                 var(--muted);
+    --color-muted-foreground:      var(--muted-foreground);
+    --color-accent:                var(--accent);
+    --color-accent-foreground:     var(--accent-foreground);
+    --color-destructive:           var(--destructive);
+    --color-destructive-foreground:var(--destructive-foreground);
+    --color-border:                var(--border);
+    --color-input:                 var(--input);
+    --color-ring:                  var(--ring);
+    --color-chart-1:               var(--chart-1);
+    --color-chart-2:               var(--chart-2);
+    --color-chart-3:               var(--chart-3);
+    --color-chart-4:               var(--chart-4);
+    --color-chart-5:               var(--chart-5);
+    --color-sidebar:               var(--sidebar-background);
+    --color-sidebar-foreground:    var(--sidebar-foreground);
+    --color-sidebar-primary:       var(--sidebar-primary);
     --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-accent:        var(--sidebar-accent);
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-    --color-sidebar-border: var(--sidebar-border);
-    --color-sidebar-ring: var(--sidebar-ring);
+    --color-sidebar-border:        var(--sidebar-border);
+    --color-sidebar-ring:          var(--sidebar-ring);
 }
 
-/*
-  The default border color has changed to `currentColor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
+/* ── Design system custom variables ──────────────────────────────── */
+:root {
+    /* Tailwind/shadcn tokens */
+    --background:             hsl(0 0% 100%);
+    --foreground:             hsl(0 0% 3.9%);
+    --card:                   hsl(0 0% 100%);
+    --card-foreground:        hsl(0 0% 3.9%);
+    --popover:                hsl(0 0% 100%);
+    --popover-foreground:     hsl(0 0% 3.9%);
+    --primary:                hsl(0 0% 9%);
+    --primary-foreground:     hsl(0 0% 98%);
+    --secondary:              hsl(0 0% 92.1%);
+    --secondary-foreground:   hsl(0 0% 9%);
+    --muted:                  hsl(0 0% 96.1%);
+    --muted-foreground:       hsl(0 0% 45.1%);
+    --accent:                 hsl(0 0% 96.1%);
+    --accent-foreground:      hsl(0 0% 9%);
+    --destructive:            hsl(0 84.2% 60.2%);
+    --destructive-foreground: hsl(0 0% 98%);
+    --border:                 hsl(0 0% 92.8%);
+    --input:                  hsl(0 0% 89.8%);
+    --ring:                   hsl(0 0% 3.9%);
+    --chart-1:                hsl(12 76% 61%);
+    --chart-2:                hsl(173 58% 39%);
+    --chart-3:                hsl(197 37% 24%);
+    --chart-4:                hsl(43 74% 66%);
+    --chart-5:                hsl(27 87% 67%);
+    --radius:                 0.5rem;
+    --sidebar-background:     hsl(0 0% 98%);
+    --sidebar-foreground:     hsl(240 5.3% 26.1%);
+    --sidebar-primary:        hsl(0 0% 10%);
+    --sidebar-primary-foreground: hsl(0 0% 98%);
+    --sidebar-accent:         hsl(0 0% 94%);
+    --sidebar-accent-foreground: hsl(0 0% 30%);
+    --sidebar-border:         hsl(0 0% 91%);
+    --sidebar-ring:           hsl(217.2 91.2% 59.8%);
+    --sidebar:                hsl(0 0% 98%);
 
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
+    /* App design tokens */
+    --teal:        #0d9488;
+    --teal-light:  #ccfbf1;
+    --teal-dark:   #0f766e;
+    --yellow:      #facc15;
+    --yellow-dark: #eab308;
+    --shadow-sm:   0 1px 4px rgba(0,0,0,0.07);
+    --shadow-md:   0 4px 16px rgba(0,0,0,0.09);
+    --shadow-lg:   0 8px 40px rgba(0,0,0,0.13);
+    --transition:  0.15s ease;
+}
+
+.dark {
+    --background:             hsl(0 0% 3.9%);
+    --foreground:             hsl(0 0% 98%);
+    --card:                   hsl(0 0% 3.9%);
+    --card-foreground:        hsl(0 0% 98%);
+    --popover:                hsl(0 0% 3.9%);
+    --popover-foreground:     hsl(0 0% 98%);
+    --primary:                hsl(0 0% 98%);
+    --primary-foreground:     hsl(0 0% 9%);
+    --secondary:              hsl(0 0% 14.9%);
+    --secondary-foreground:   hsl(0 0% 98%);
+    --muted:                  hsl(0 0% 16.08%);
+    --muted-foreground:       hsl(0 0% 63.9%);
+    --accent:                 hsl(0 0% 14.9%);
+    --accent-foreground:      hsl(0 0% 98%);
+    --destructive:            hsl(0 84% 60%);
+    --destructive-foreground: hsl(0 0% 98%);
+    --border:                 hsl(0 0% 14.9%);
+    --input:                  hsl(0 0% 14.9%);
+    --ring:                   hsl(0 0% 83.1%);
+    --chart-1:                hsl(220 70% 50%);
+    --chart-2:                hsl(160 60% 45%);
+    --chart-3:                hsl(30 80% 55%);
+    --chart-4:                hsl(280 65% 60%);
+    --chart-5:                hsl(340 75% 55%);
+    --sidebar-background:     hsl(0 0% 7%);
+    --sidebar-foreground:     hsl(0 0% 95.9%);
+    --sidebar-primary:        hsl(360 100% 100%);
+    --sidebar-primary-foreground: hsl(0 0% 100%);
+    --sidebar-accent:         hsl(0 0% 15.9%);
+    --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
+    --sidebar-border:         hsl(0 0% 15.9%);
+    --sidebar-ring:           hsl(217.2 91.2% 59.8%);
+    --sidebar:                hsl(240 5.9% 10%);
+}
+
+/* ── Tailwind compatibility (border color v3→v4) ─────────────────── */
 @layer base {
-    *,
-    ::after,
-    ::before,
-    ::backdrop,
-    ::file-selector-button {
+    *, ::after, ::before, ::backdrop, ::file-selector-button {
         border-color: var(--color-gray-200, currentColor);
     }
 }
 
 @layer utilities {
-    body,
-    html {
+    body, html {
         --font-sans:
-            'Instrument Sans', ui-sans-serif, system-ui, sans-serif,
+            'DM Sans', ui-sans-serif, system-ui, sans-serif,
             'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
             'Noto Color Emoji';
     }
 }
 
-:root {
-    --background: hsl(0 0% 100%);
-    --foreground: hsl(0 0% 3.9%);
-    --card: hsl(0 0% 100%);
-    --card-foreground: hsl(0 0% 3.9%);
-    --popover: hsl(0 0% 100%);
-    --popover-foreground: hsl(0 0% 3.9%);
-    --primary: hsl(0 0% 9%);
-    --primary-foreground: hsl(0 0% 98%);
-    --secondary: hsl(0 0% 92.1%);
-    --secondary-foreground: hsl(0 0% 9%);
-    --muted: hsl(0 0% 96.1%);
-    --muted-foreground: hsl(0 0% 45.1%);
-    --accent: hsl(0 0% 96.1%);
-    --accent-foreground: hsl(0 0% 9%);
-    --destructive: hsl(0 84.2% 60.2%);
-    --destructive-foreground: hsl(0 0% 98%);
-    --border: hsl(0 0% 92.8%);
-    --input: hsl(0 0% 89.8%);
-    --ring: hsl(0 0% 3.9%);
-    --chart-1: hsl(12 76% 61%);
-    --chart-2: hsl(173 58% 39%);
-    --chart-3: hsl(197 37% 24%);
-    --chart-4: hsl(43 74% 66%);
-    --chart-5: hsl(27 87% 67%);
-    --radius: 0.5rem;
-    --sidebar-background: hsl(0 0% 98%);
-    --sidebar-foreground: hsl(240 5.3% 26.1%);
-    --sidebar-primary: hsl(0 0% 10%);
-    --sidebar-primary-foreground: hsl(0 0% 98%);
-    --sidebar-accent: hsl(0 0% 94%);
-    --sidebar-accent-foreground: hsl(0 0% 30%);
-    --sidebar-border: hsl(0 0% 91%);
-    --sidebar-ring: hsl(217.2 91.2% 59.8%);
-    --sidebar: hsl(0 0% 98%);
-}
-
-.dark {
-    --background: hsl(0 0% 3.9%);
-    --foreground: hsl(0 0% 98%);
-    --card: hsl(0 0% 3.9%);
-    --card-foreground: hsl(0 0% 98%);
-    --popover: hsl(0 0% 3.9%);
-    --popover-foreground: hsl(0 0% 98%);
-    --primary: hsl(0 0% 98%);
-    --primary-foreground: hsl(0 0% 9%);
-    --secondary: hsl(0 0% 14.9%);
-    --secondary-foreground: hsl(0 0% 98%);
-    --muted: hsl(0 0% 16.08%);
-    --muted-foreground: hsl(0 0% 63.9%);
-    --accent: hsl(0 0% 14.9%);
-    --accent-foreground: hsl(0 0% 98%);
-    --destructive: hsl(0 84% 60%);
-    --destructive-foreground: hsl(0 0% 98%);
-    --border: hsl(0 0% 14.9%);
-    --input: hsl(0 0% 14.9%);
-    --ring: hsl(0 0% 83.1%);
-    --chart-1: hsl(220 70% 50%);
-    --chart-2: hsl(160 60% 45%);
-    --chart-3: hsl(30 80% 55%);
-    --chart-4: hsl(280 65% 60%);
-    --chart-5: hsl(340 75% 55%);
-    --sidebar-background: hsl(0 0% 7%);
-    --sidebar-foreground: hsl(0 0% 95.9%);
-    --sidebar-primary: hsl(360, 100%, 100%);
-    --sidebar-primary-foreground: hsl(0 0% 100%);
-    --sidebar-accent: hsl(0 0% 15.9%);
-    --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
-    --sidebar-border: hsl(0 0% 15.9%);
-    --sidebar-ring: hsl(217.2 91.2% 59.8%);
-    --sidebar: hsl(240 5.9% 10%);
-}
-
+/* ── Base styles ─────────────────────────────────────────────────── */
 @layer base {
     * {
         @apply border-border outline-ring/50;
     }
     body {
         @apply bg-background text-foreground;
+        font-family: 'DM Sans', sans-serif;
     }
-    
-    
-    
-    .business-hours {background-color: #00daff21;}
-    .vuecal__event {color: #fff;border: 1px solid;}
-    .vuecal__event.leisure {background-color: #fd9c42d9;}
-    .vuecal__event.health {background-color: #57cea9cc;}
-    .vuecal__event.sport {background-color: #ff6666d9;}
+
+    h1, h2, h3, h4, h5, h6 {
+        font-family: 'Playfair Display', Georgia, serif;
+        font-weight: 900;
+        line-height: 1.15;
+        letter-spacing: -0.01em;
+    }
+
+    /* ── VueCal event styles ──────────────────────────────────────── */
+    .business-hours { background-color: #00daff21; }
+    .vuecal__event  { color: #fff; border: 1px solid; }
+    .vuecal__event.leisure  { background-color: #fd9c42d9; }
+    .vuecal__event.health   { background-color: #57cea9cc; }
+    .vuecal__event.sport    { background-color: #ff6666d9; }
     .vuecal__event.lunch {
-    background-color: repeating-linear-gradient(45deg, transparent 0 10px, #ffffff11 10px 20px);
-    border: none;
+        background-color: repeating-linear-gradient(
+            45deg, transparent 0 10px, #ffffff11 10px 20px
+        );
+        border: none;
     }
-
 }
 
+/* ── Layout ──────────────────────────────────────────────────────── */
+.container {
+    width: 90%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 0;
+}
 
-.container{
-  width: 90%;
-  margin: 0 auto;
-}
-.sheet-image {
-  width: 200px;
-  height: auto;
-  object-fit: cover;
-}
+/* ── Sheets / Partitions ─────────────────────────────────────────── */
 .sheets-blocks {
-  display: grid;
-  grid-template: auto auto auto;
-  gap: 1em;
-  margin-top: 1em;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
 }
+
 .sheet-card {
-  display: block;
-  text-decoration: none;
-  color: inherit;
-  cursor: pointer;
-  display: block;
-  border: 2px solid red;
-  padding: 0.5em;
-  border-radius: 3px;
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 0.75rem;
+    padding: 0.75rem;
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow var(--transition), border-color var(--transition), transform var(--transition);
 }
-body{
-  background-color: white;
-  color:brown
-}   
+.sheet-card:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--teal);
+    transform: translateY(-2px);
+}
+
+.sheet-image {
+    width: 100%;
+    max-width: 200px;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 0.5rem;
+    display: block;
+    margin: 0 auto 0.5rem;
+}
+
+/* ── Buttons ─────────────────────────────────────────────────────── */
+.btn-teal {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.55rem 1.2rem;
+    background: var(--teal);
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.875rem;
+    border: none;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition: background var(--transition), transform 0.08s;
+}
+.btn-teal:hover  { background: var(--teal-dark); }
+.btn-teal:active { transform: scale(0.97); }
+
+.btn-yellow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.55rem 1.2rem;
+    background: var(--yellow);
+    color: #000;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 800;
+    font-size: 0.875rem;
+    letter-spacing: 0.04em;
+    border: none;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: background var(--transition), transform 0.08s;
+}
+.btn-yellow:hover  { background: var(--yellow-dark); }
+.btn-yellow:active { transform: scale(0.97); }
+
+/* ── Card ────────────────────────────────────────────────── */
+.training-card {
+    font-family: 'DM Sans', sans-serif;
+    border-radius: 1.25rem;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.09);
+    background: #fff;
+    max-width: 420px;
+}
+
+/* ── Header ──────────────────────────────────────────────── */
+.training-card__header {
+    background: #0d9488;
+    padding: 1.25rem 1.5rem 2rem;
+    clip-path: ellipse(110% 100% at 50% 0%);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.training-card__title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: #fff;
+    margin: 0;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+}
+
+.training-card__badge {
+    font-size: 1.5rem;
+    line-height: 1;
+    margin-top: 0.1rem;
+}
+
+/* ── Body ────────────────────────────────────────────────── */
+.training-card__body {
+    padding: 1.25rem 1.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+}
+
+.training-card__name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #111827;
+    padding-bottom: 0.75rem;
+    border-bottom: 1.5px solid #f3f4f6;
+}
+
+/* ── Meta rows ───────────────────────────────────────────── */
+.training-card__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+}
+
+.meta-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.9rem;
+    color: #374151;
+}
+
+.meta-icon {
+    font-size: 1rem;
+    flex-shrink: 0;
+    width: 1.4rem;
+    text-align: center;
+}
+
+/* ── Empty state ─────────────────────────────────────────── */
+.training-card--empty {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.25rem 1.5rem;
+    border: 1.5px dashed #d1d5db;
+    background: #f9fafb;
+    box-shadow: none;
+}
+
+.empty-icon {
+    font-size: 1.5rem;
+}
+
+.training-card--empty p {
+    color: #6b7280;
+    font-size: 0.95rem;
+    font-family: 'DM Sans', sans-serif;
+}
+
+/* ── Wrapper ─────────────────────────────────────────────────────────────── */
+.form-wrap {
+  width: 100%;
+  max-width: 540px;
+  margin: 0 auto;
+  font-family: 'DM Sans', sans-serif;
+  border-radius: 2rem;
+  overflow: hidden;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.13);
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+.form-header {
+  background: #0d9488;
+  padding: 2rem 2.25rem 3rem;
+  position: relative;
+  clip-path: ellipse(110% 100% at 50% 0%);
+}
+
+.form-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.75rem;
+  font-weight: 900;
+  color: #fff;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+/* ── Body ────────────────────────────────────────────────────────────────── */
+.form-body {
+  background: #fff;
+  padding: 2rem 2rem 2.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.35rem;
+}
+
+/* ── Layout helpers ──────────────────────────────────────────────────────── */
+.row-inline {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.flex-1 { flex: 1; min-width: 0; }
+
+.date-group,
+.time-group,
+.duration-group {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-shrink: 0;
+}
+
+/* ── Inputs ──────────────────────────────────────────────────────────────── */
+.input {
+  border: 1.5px solid #d1d5db;
+  border-radius: 0.75rem;
+  padding: 0.65rem 0.9rem;
+  font-size: 1rem;
+  font-family: inherit;
+  color: #111;
+  background: #fff;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.input:focus {
+  border-color: #0d9488;
+  box-shadow: 0 0 0 3px #0d948833;
+}
+.input-sm  { padding: 0.55rem 0.75rem; width: auto; font-size: 0.95rem; }
+.input-dur { width: 5.5rem; text-align: center; }
+
+/* ── Labels ──────────────────────────────────────────────────────────────── */
+.label-inline {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #6b7280;
+  white-space: nowrap;
+}
+
+.end-hint {
+  font-size: 0.88rem;
+  color: #0d9488;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* ── Partition icon ──────────────────────────────────────────────────────── */
+.icon-link {
+  font-size: 1.3rem;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+/* ── Répétition ──────────────────────────────────────────────────────────── */
+.repeat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+}
+
+.section-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #111;
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+}
+.toggle-btn svg { width: 1.9rem; height: 1.9rem; }
+
+.repeat-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  border-left: 3px solid #ccfbf1;
+  padding-left: 1.1rem;
+}
+
+/* ── Jours ───────────────────────────────────────────────────────────────── */
+.days-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.day-btn {
+  flex: 1;
+  padding: 0.65rem 0;
+  font-size: 0.92rem;
+  font-weight: 700;
+  font-family: inherit;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 0.75rem;
+  background: #f3f4f6;
+  color: #374151;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s, color 0.12s, transform 0.08s;
+}
+.day-btn:hover   { background: #e5e7eb; }
+.day-btn:active  { transform: scale(0.94); }
+.day-btn.selected {
+  background: #facc15;
+  border-color: #eab308;
+  color: #000;
+}
+
+/* ── Rappels ─────────────────────────────────────────────────────────────── */
+.reminder-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+/* ── Submit ──────────────────────────────────────────────────────────────── */
+.btn-submit {
+  width: 100%;
+  padding: 1rem;
+  background: #facc15;
+  border: none;
+  border-radius: 1rem;
+  font-family: inherit;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #000;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  margin-top: 0.5rem;
+}
+.btn-submit:hover  { background: #eab308; }
+.btn-submit:active { transform: scale(0.98); }
+
+/* ── Page layout ─────────────────────────────────────────────────────────── */
+.calendar-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.25rem;
+  height: 100%;
+}
+
+/* ── Toolbar ─────────────────────────────────────────────────────────────── */
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.btn-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1.1rem;
+  background: #facc15;
+  color: #000;
+  font-weight: 700;
+  font-size: 0.875rem;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+.btn-add:hover  { background: #eab308; }
+.btn-add:active { transform: scale(0.97); }
+.btn-add .icon  { width: 1rem; height: 1rem; }
+
+/* ── Calendar ────────────────────────────────────────────────────────────── */
+.cal {
+  flex: 1;
+  min-height: 600px;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+}
+
+/* ── Dialog shared ───────────────────────────────────────────────────────── */
+.dialog-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 0.25rem 0 0.5rem;
+}
+
+/* Read fields */
+.field-row        { display: flex; flex-direction: column; gap: 0.15rem; }
+.field-label      { font-size: 0.75rem; color: #6b7280; }
+.field-value      { font-size: 0.9rem; font-weight: 500; }
+.arrow            { color: #9ca3af; margin: 0 0.25rem; }
+.link             { color: #2563eb; font-size: 0.875rem; word-break: break-all; }
+.link:hover       { text-decoration: underline; }
+
+/* Edit form */
+.form-field       { display: flex; flex-direction: column; gap: 0.25rem; }
+.form-field label { font-size: 0.75rem; color: #6b7280; }
+.form-field input,
+.form-field select {
+  width: 100%;
+  padding: 0.45rem 0.65rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  outline: none;
+  transition: box-shadow 0.15s;
+}
+.form-field input:focus,
+.form-field select:focus {
+  box-shadow: 0 0 0 2px #60a5fa55;
+  border-color: #60a5fa;
+}
+
+/* Actions */
+.dialog-actions         { display: flex; justify-content: flex-end; padding-top: 0.5rem; }
+.dialog-actions.between { justify-content: space-between; border-top: 1px solid #f3f4f6; }
+.btn-group              { display: flex; gap: 0.5rem; }
+
+/* Buttons */
+.btn {
+  padding: 0.45rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: filter 0.15s, transform 0.1s;
+}
+.btn:active        { transform: scale(0.97); }
+.btn-primary       { background: #2563eb; color: #fff; }
+.btn-primary:hover { filter: brightness(1.1); }
+.btn-success       { background: #16a34a; color: #fff; }
+.btn-success:hover { filter: brightness(1.1); }
+.btn-danger        { background: #dc2626; color: #fff; }
+.btn-danger:hover  { filter: brightness(1.1); }
+.btn-ghost         { background: transparent; border: 1px solid #d1d5db; color: #374151; }
+.btn-ghost:hover   { background: #f9fafb; }
+
+
+/* ───────────────────────────────────────────── */
+/*  HISTORIQUE — CARTE PRINCIPALE                */
+/* ───────────────────────────────────────────── */
+
+.history-card {
+    background: #ffffff;
+    border-radius: 1rem;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform .12s, box-shadow .12s;
+    margin-bottom: 1rem;
+}
+
+.history-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 22px rgba(0,0,0,0.12);
+}
+
+.history-card-left {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.history-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #111827;
+}
+
+.history-meta {
+    font-size: 0.9rem;
+    color: #6b7280;
+}
+
+.history-btn {
+    background: #facc15;
+    color: #000;
+    font-weight: 800;
+    padding: 0.55rem 1.2rem;
+    border-radius: 9999px;
+    border: none;
+    cursor: pointer;
+    transition: background .12s, transform .08s;
+    font-family: 'DM Sans', sans-serif;
+    letter-spacing: 0.03em;
+}
+
+.history-btn:hover {
+    background: #eab308;
+}
+
+.history-btn:active {
+    transform: scale(0.96);
+}
+
+/* ───────────────────────────────────────────── */
+/*  HISTORIQUE — DÉTAIL                          */
+/* ───────────────────────────────────────────── */
+
+.history-detail-card {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 6px 22px rgba(0,0,0,0.12);
+    margin-top: 1rem;
+}
+
+.history-detail-title {
+    font-size: 1.4rem;
+    font-weight: 900;
+    margin-bottom: 0.5rem;
+}
+
+.history-detail-meta {
+    font-size: 0.95rem;
+    color: #374151;
+    margin-bottom: 0.25rem;
+}
+
+.history-detail-subtitle {
+    margin-top: 1rem;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.history-detail-list {
+    margin-top: 0.5rem;
+    padding-left: 1rem;
+    list-style: disc;
+    color: #6b7280;
+}

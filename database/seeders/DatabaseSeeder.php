@@ -5,66 +5,61 @@ namespace Database\Seeders;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\GenericInstrument;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Training;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
+        Role::firstOrCreate(['name' => 'élève']);
+        Role::firstOrCreate(['name' => 'prof']);
 
-       Role::firstOrCreate(['name' => 'élève']);
-       Role::firstOrCreate(['name' => 'prof']);
-       
+        $instruments = [
+            'Guitare','Piano','Batterie','Violon','Saxophone','Flûte','Contrebasse',
+            'Clarinette','Trompette','Harpe','Accordéon','Harmonica','Tambourin',
+            'Orgue','Trombone','Cor d’harmonie','Bongo','Maracas','Ukulélé',
+            'Mandoline','Xylophone','Glockenspiel','Didgeridoo','Vibraphone','Balafon'
+        ];
 
-        DB::table('generic_instruments')->insert([
-            ['id' => 1, 'name' => 'Guitare'],
-            ['id' => 2, 'name' => 'Piano'],
-            ['id' => 3, 'name' => 'Batterie'],
-            ['id' => 4, 'name' => 'Violon'],
-            ['id' => 5, 'name' => 'Saxophone'],
-            ['id' => 6, 'name' => 'Flûte'],
-            ['id' => 7, 'name' => 'Contrebasse'],
-            ['id' => 8, 'name' => 'Clarinette'],
-            ['id' => 9, 'name' => 'Trompette'],
-            ['id' => 10, 'name' => 'Harpe'],
-            ['id' => 11, 'name' => 'Accordéon'],
-            ['id' => 12, 'name' => 'Harmonica'],
-            ['id' => 13, 'name' => 'Tambourin'],
-            ['id' => 14, 'name' => 'Orgue'],
-            ['id' => 15, 'name' => 'Trombone'],
-            ['id' => 16, 'name' => 'Cor d’harmonie'],
-            ['id' => 17, 'name' => 'Bongo'],
-            ['id' => 18, 'name' => 'Maracas'],
-            ['id' => 19, 'name' => 'Ukulélé'],
-            ['id' => 20, 'name' => 'Mandoline'],
-            ['id' => 21, 'name' => 'Xylophone'],
-            ['id' => 22, 'name' => 'Glockenspiel'],
-            ['id' => 23, 'name' => 'Didgeridoo'],
-            ['id' => 24, 'name' => 'Vibraphone'],
-            ['id' => 25, 'name' => 'Balafon'],
-        ]);
+        foreach ($instruments as $index => $name) {
+            GenericInstrument::firstOrCreate([
+                'id' => $index + 1,
+                'name' => $name
+            ]);
+        }
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'nickname' => 'testuser',
-            'email' => 'test@example.com',
-            'password' => bcrypt('password123'), 
-            'role_id' => 1,
-        ]);
-        
-        DB::table('training_medias')->insert([
+        $user = User::firstOrCreate(
+            ['email' => 'test@example.com'],
+            [
+                'name' => 'Test User',
+                'nickname' => 'testuser',
+                'password' => bcrypt('password123'),
+                'role_id' => 1,
+            ]
+        );
+
+        DB::table('training_medias')->insertOrIgnore([
             ['id' => 1, 'link' => 'https://example.com']
         ]);
 
-        DB::table('trainings')->insert([
-            ['id' => 1, 'name' => 'test1', 'date_training' => '2026-03-14 10:45:00', 'duration' => 60, 'training_media_id' => null, 'user_id' => 1, 'sheet_id' => null],
-            ['id' => 2, 'name' => 'Didjeridoo', 'date_training' => '2026-03-16 15:00:00', 'duration' => 60, 'training_media_id' => null, 'user_id' => 1, 'sheet_id' => null],
+        Training::create([
+            'name' => 'test1',
+            'date_training' => '2026-03-15 14:00:00',
+            'duration' => 60,
+            'training_media_id' => null,
+            'user_id' => $user->id,
+            'sheet_id' => null
+        ]);
+
+        Training::create([
+            'name' => 'Didjeridoo',
+            'date_training' => '2026-03-16 16:00:00',
+            'duration' => 60,
+            'training_media_id' => null,
+            'user_id' => $user->id,
+            'sheet_id' => null
         ]);
     }
 }
