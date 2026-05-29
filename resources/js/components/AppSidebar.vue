@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
-import { BookOpen, FolderGit2, Hourglass, LayoutGrid } from 'lucide-vue-next';
+import { Mail } from 'lucide-vue-next';
 import AppLogo from '@/components/AppLogo.vue';
 import NavFooter from '@/components/NavFooter.vue';
-import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
 import {
     Sidebar,
@@ -13,72 +12,105 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
+    SidebarGroup,
+    SidebarGroupContent,
 } from '@/components/ui/sidebar';
 import { dashboard, calendar, library, historique, messagerie } from '@/customRoutes';
 import type { NavItem } from '@/types';
- 
-    const mainNavItems: NavItem[] = [
+
+const mainNavItems: NavItem[] = [
     {
-        title: 'Dashboard',
-        href: dashboard.url(),
-        icon: LayoutGrid,
-    },
-    {
-        title: 'Calendar',
-        href: calendar.url(),
-        icon: BookOpen,
-    },
-    {
-        title: 'Library',
+        title: 'Bibliothèque',
         href: library.url(),
-        icon: FolderGit2,
+    },
+    {
+        title: 'Calendrier',
+        href: calendar.url(),
     },
     {
         title: 'Historique',
         href: historique.url(),
-        icon: Hourglass,
-    },
-    {
-        title: 'Messagerie',
-        href: messagerie.url(),
-        icon: BookOpen,
     },
 ];
 
 const footerNavItems: NavItem[] = [
     {
-        title: 'Repository',
-        href: 'https://github.com/laravel/vue-starter-kit',
-        icon: FolderGit2,
+        title: 'Mentions légales',
+        href: '/mentions-legales',
     },
     {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#vue',
-        icon: BookOpen,
+        title: 'Privacy policy',
+        href: '/privacy-policy',
     },
 ];
 </script>
 
 <template>
-    <Sidebar collapsible="icon" variant="inset">
-        <SidebarHeader>
+    <Sidebar collapsible="icon" variant="inset" class="bg-[#1a9b9b] text-white">
+        <SidebarHeader class="flex flex-col items-center gap-4 px-4 py-6">
             <SidebarMenu>
                 <SidebarMenuItem>
                     <SidebarMenuButton size="lg" as-child>
-                        <Link :href="dashboard()">
+                        <Link :href="dashboard.url()">
                             <AppLogo />
+                        </Link>
+                    </SidebarMenuButton>
+                </SidebarMenuItem>
+            </SidebarMenu>
+
+            <!-- Mon compte -->
+            <SidebarMenu>
+                <SidebarMenuItem>
+                    <SidebarMenuButton as-child class="rounded-full bg-[#f0b429] px-4 py-2 text-center font-semibold text-white hover:bg-[#e0a419] hover:text-white">
+                        <Link :href="dashboard.url()" class="flex items-center justify-center gap-2" style="color: black;">
+                            Mon compte
+                        </Link>
+                    </SidebarMenuButton>
+                </SidebarMenuItem>
+            </SidebarMenu>
+
+            <!-- Avatar -->
+            <div class="h-16 w-16 rounded-full bg-gray-300" />
+
+            <!-- Messagerie -->
+            <SidebarMenu>
+                <SidebarMenuItem>
+                    <SidebarMenuButton as-child class="rounded-full bg-[#f0b429] px-4 py-2 font-semibold text-white hover:bg-[#e0a419] hover:text-white">
+                        <Link :href="messagerie.url()" class="flex items-center justify-center gap-2" style="color: black;">
+                            <Mail class="h-4 w-4" />
+                            Messagerie
                         </Link>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
             </SidebarMenu>
         </SidebarHeader>
 
-        <SidebarContent>
-            <NavMain :items="mainNavItems" />
+        <SidebarContent class="px-4 py-4">
+            <SidebarGroup>
+                <SidebarGroupContent>
+                    <SidebarMenu>
+                        <SidebarMenuItem v-for="item in mainNavItems">
+                            <SidebarMenuButton as-child class="text-xl font-light text-white hover:bg-transparent hover:opacity-80">
+                                <Link :href="item.href">
+                                    {{ item.title }}
+                                </Link>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                    </SidebarMenu>
+                </SidebarGroupContent>
+            </SidebarGroup>
         </SidebarContent>
 
-        <SidebarFooter>
-            <NavFooter :items="footerNavItems" />
+        <SidebarFooter class="px-4 py-4">
+            <SidebarMenu>
+                <SidebarMenuItem v-for="item in footerNavItems">
+                    <SidebarMenuButton as-child class="text-xs text-white/70 hover:bg-transparent hover:text-white">
+                        <Link :href="item.href">
+                            {{ item.title }}
+                        </Link>
+                    </SidebarMenuButton>
+                </SidebarMenuItem>
+            </SidebarMenu>
             <NavUser />
         </SidebarFooter>
     </Sidebar>

@@ -89,15 +89,15 @@
     --chart-4:                hsl(43 74% 66%);
     --chart-5:                hsl(27 87% 67%);
     --radius:                 0.5rem;
-    --sidebar-background:     hsl(0 0% 98%);
-    --sidebar-foreground:     hsl(240 5.3% 26.1%);
-    --sidebar-primary:        hsl(0 0% 10%);
-    --sidebar-primary-foreground: hsl(0 0% 98%);
-    --sidebar-accent:         hsl(0 0% 94%);
-    --sidebar-accent-foreground: hsl(0 0% 30%);
-    --sidebar-border:         hsl(0 0% 91%);
-    --sidebar-ring:           hsl(217.2 91.2% 59.8%);
-    --sidebar:                hsl(0 0% 98%);
+    --sidebar-background: #0091A7;
+    --sidebar-foreground: hsl(0 0% 100%);
+    --sidebar-primary:    hsl(0 0% 100%);
+    --sidebar-primary-foreground: hsl(0 0% 10%);
+    --sidebar-accent:     var(--teal-dark);
+    --sidebar-accent-foreground: hsl(0 0% 100%);
+    --sidebar-border:     var(--teal-dark);
+    --sidebar:            #0091A7;
+
 
     /* App design tokens */
     --teal:        #0d9488;
@@ -617,22 +617,39 @@
 .link:hover       { text-decoration: underline; }
 
 /* Edit form */
-.form-field       { display: flex; flex-direction: column; gap: 0.25rem; }
-.form-field label { font-size: 0.75rem; color: #6b7280; }
-.form-field input,
-.form-field select {
-  width: 100%;
-  padding: 0.45rem 0.65rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
-  outline: none;
-  transition: box-shadow 0.15s;
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
 }
-.form-field input:focus,
-.form-field select:focus {
-  box-shadow: 0 0 0 2px #60a5fa55;
-  border-color: #60a5fa;
+
+.form-field label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Make datetime-local inputs full width */
+.form-field .input {
+    width: 100%;
+}
+
+.ef-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 0.75rem;
+    border-top: 1px solid #f3f4f6;
+    margin-top: 0.25rem;
+}
+
+.ef-submit {
+    width: auto !important;
+    padding: 0.65rem 1.6rem !important;
+    margin-top: 0 !important;
+    font-size: 0.9rem !important;
 }
 
 /* Actions */

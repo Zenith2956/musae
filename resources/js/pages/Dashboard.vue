@@ -18,13 +18,6 @@ const page = usePage();
 
 const nextTraining = page.props.nextTraining as any;
 
-const formatDate = (date: string) => {
-    return new Date(date).toLocaleString('fr-FR', {
-        dateStyle: 'medium',
-        timeStyle: 'short'
-    });
-};
-
 </script>
 
 <template>

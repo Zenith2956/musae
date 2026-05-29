@@ -65,16 +65,6 @@ const grouped = computed(() => {
     return map;
 })
 
-function formatDate(dateStr: string): string {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('fr-FR', {
-        day: '2-digit',
-        month: '2-digit',
-        year: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit'
-    });
-}
 </script>
 
 <template>

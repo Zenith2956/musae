@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue'
 
-
 const props = defineProps({
   modelValue: { type: Object, default: () => ({}) },
   sheetOptions: { type: Array as () => { id: number; name: string }[], default: () => [] },
@@ -14,7 +13,9 @@ const name = ref<string>(props.modelValue.name ?? '')
 const date = ref<string>(props.modelValue.date ?? '')
 const time = ref<string>(props.modelValue.time ?? '08:00')
 const duration = ref<number>(props.modelValue.duration ?? 60)
+const link = ref<string>(props.modelValue.link ?? '')
 const sheet_id = ref<number | null>(props.modelValue.sheet_id ?? null)
+const instrument_id = ref<number | null>(props.modelValue.instrument_id ?? null)
 const reminder = ref<boolean>(props.modelValue.reminder ?? false)
 const showRepeat = ref<boolean>(false)
 const days = ref<string[]>(props.modelValue.days ?? [])
@@ -29,21 +30,14 @@ const weekDays = [
 
 function toggleDay(key: string) {
   if (key === 'all') {
-    if (days.value.length === 7) {
-      days.value = []
-      return
-    }
     days.value = days.value.length === 7 ? [] : weekDays.filter(d => d.key !== 'all').map(d => d.key)
     return
   }
-
   days.value = days.value.includes(key)
     ? days.value.filter(d => d !== key)
     : [...days.value, key]
 }
 
-
-// Computed end time label for display
 const endTimeLabel = computed(() => {
   if (!date.value || !time.value) return null
   const start = new Date(`${date.value}T${time.value}:00`)
@@ -51,14 +45,15 @@ const endTimeLabel = computed(() => {
   return end.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
 })
 
-watch([name, date, time, duration, sheet_id, reminder, days, repeatEnd, showRepeat], () => {
+watch([name, date, time, duration, link, sheet_id, instrument_id, reminder, days, repeatEnd, showRepeat], () => {
   emit('update:modelValue', {
     name: name.value,
     date: date.value,
     time: time.value,
     duration: duration.value,
+    link: link.value,
     sheet_id: sheet_id.value,
-    instrument_id: props.modelValue.instrument_id,
+    instrument_id: instrument_id.value,
     reminder: reminder.value,
     days: showRepeat.value ? days.value : [],
     repeatEnd: showRepeat.value ? repeatEnd.value : '',
@@ -108,14 +103,16 @@ watch([name, date, time, duration, sheet_id, reminder, days, repeatEnd, showRepe
         </option>
       </select>
 
-
       <!-- Partition -->
+      <select v-model="sheet_id" class="input flex-1">
+        <option :value="null">Partition</option>
+        <option v-for="s in sheetOptions" :key="s.id" :value="s.id">{{ s.name }}</option>
+      </select>
+
+      <!-- Lien -->
       <div class="row-inline">
-        <select v-model="sheet_id" class="input flex-1">
-          <option :value="null">Partition</option>
-          <option v-for="s in sheetOptions" :key="s.id" :value="s.id">{{ s.name }}</option>
-        </select>
-        <span class="icon-link">🔗</span>
+        <span class="label-inline">Lien :</span>
+        <input v-model="link" type="url" class="input flex-1" placeholder="https://..." />
       </div>
 
       <!-- Répétition (toggle) -->
@@ -135,10 +132,11 @@ watch([name, date, time, duration, sheet_id, reminder, days, repeatEnd, showRepe
 
       <!-- Répétition expandable -->
       <div v-if="showRepeat" class="repeat-body">
+
         <!-- Jours -->
         <div class="days-row">
           <button v-for="d in weekDays" :key="d.key" type="button" @click="toggleDay(d.key)" class="day-btn"
-            :class="{ selected: days.includes(d.key) }">
+            :class="{ selected: d.key === 'all' ? days.length === 7 : days.includes(d.key) }">
             {{ d.label }}
           </button>
         </div>
