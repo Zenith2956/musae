@@ -8,82 +8,83 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-
 class MessagerieController extends Controller
 {
     /**
-     * Affiche la liste des conversations de l'utilisateur connecté.
+     * Données partagées par toutes les vues Messagerie.
+     */
+    private function sharedData(): array
+    {
+        return [
+            'conversations' => Auth::user()
+                ->conversations()
+                ->with(['users', 'messages' => fn($q) => $q->latest()->limit(1)])
+                ->latest()
+                ->get()
+                ->map(fn($conv) => [
+                    'id'           => $conv->id,
+                    'participants' => $conv->users->where('id', '!=', Auth::id())->values(),
+                    'last_message' => $conv->messages->first(),
+                    'updated_at'   => $conv->updated_at,
+                ]),
+
+            'users' => User::where('id', '!=', Auth::id())
+                ->get(['id', 'name', 'email']),
+        ];
+    }
+
+    /**
+     * Liste des conversations.
      */
     public function index()
-{
-    $conversations = Auth::user()
-        ->conversations()
-        ->with(['users', 'messages' => fn($q) => $q->latest()->limit(1)])
-        ->withCount('messages')
-        ->latest()
-        ->get()
-        ->map(function ($conversation) {
-            return [
-                'id'           => $conversation->id,
-                'participants' => $conversation->users->where('id', '!=', Auth::id())->values(),
-                'last_message' => $conversation->messages->first(),
-                'updated_at'   => $conversation->updated_at,
-            ];
-        });
-
-    $users = User::where('id', '!=', Auth::id())->get(['id', 'name', 'email']);
-
-    return inertia('Messagerie', [
-        'conversations' => $conversations,
-        'users' => $users,
-    ]);
-}
-
+    {
+        return inertia('Messagerie', $this->sharedData());
+    }
 
     /**
-     * Affiche une conversation et ses messages.
+     * Conversation ouverte avec ses messages.
      */
     public function show(Conversation $conversation)
-{
-    abort_unless(
-        $conversation->users()->where('user_id', Auth::id())->exists(),
-        403
-    );
+    {
+        abort_unless(
+            $conversation->users()->where('user_id', Auth::id())->exists(),
+            403
+        );
 
-    $messages = $conversation->messages()->with('user')->oldest()->get();
-
-    return inertia('Messagerie', [
-        'selectedConversation' => $conversation->id,
-        'messages' => $messages,
-        'conversations' => Auth::user()->conversations()
-            ->with(['users', 'messages' => fn($q) => $q->latest()->limit(1)])
-            ->get()
-            ->map(fn($conv) => [
-                'id' => $conv->id,
-                'participants' => $conv->users->where('id', '!=', Auth::id())->values(),
-                'last_message' => $conv->messages->first(),
-            ]),
-    ]);
-}
-
+        return inertia('Messagerie', array_merge($this->sharedData(), [
+            'selectedConversation' => $conversation->id,
+            'messages'             => $conversation->messages()
+                ->with('user')
+                ->oldest()
+                ->get(),
+        ]));
+    }
 
     /**
-     * Crée une nouvelle conversation avec un ou plusieurs utilisateurs.
+     * Crée une nouvelle conversation.
      */
     public function store(Request $request)
     {
         $request->validate([
             'user_ids'   => 'required|array|min:1',
-            'user_ids.*' => 'exists:users,id|different:' . Auth::id(),
+            'user_ids.*' => 'exists:users,id',  // ← retirer different: temporairement pour tester
         ]);
 
-        $participantIds = collect($request->user_ids)->push(Auth::id())->sort()->values();
+        $participantIds = collect($request->user_ids)
+            ->push(Auth::id())
+            ->unique()
+            ->sort()
+            ->values();
 
-        // Cherche une conversation existante avec exactement ces participants
-        $existing = Conversation::whereHas('users', fn($q) => $q->whereIn('user_id', $participantIds))
+        $existing = Conversation::whereHas('users', function ($q) use ($participantIds) {
+            $q->whereIn('user_id', $participantIds);
+        })
             ->withCount('users')
-            ->having('users_count', count($participantIds))
-            ->first();
+            ->get()
+            ->first(function ($conv) use ($participantIds) {
+                return $conv->users->pluck('id')->sort()->values()->toArray() === $participantIds->toArray();
+            });
+
 
         if ($existing) {
             return redirect()->route('messagerie.show', $existing);
@@ -96,7 +97,7 @@ class MessagerieController extends Controller
     }
 
     /**
-     * Envoie un message dans une conversation.
+     * Envoie un message (JSON pour Axios).
      */
     public function sendMessage(Request $request, Conversation $conversation)
     {
@@ -126,7 +127,7 @@ class MessagerieController extends Controller
     }
 
     /**
-     * Supprime un message (seulement si l'utilisateur en est l'auteur).
+     * Supprime un message.
      */
     public function destroyMessage(Message $message)
     {
@@ -139,7 +140,7 @@ class MessagerieController extends Controller
     }
 
     /**
-     * Retourne les messages d'une conversation (API JSON pour polling/refresh).
+     * Messages d'une conversation (JSON pour polling).
      */
     public function messages(Conversation $conversation)
     {
@@ -148,8 +149,8 @@ class MessagerieController extends Controller
             403
         );
 
-        $messages = $conversation->messages()->with('user')->oldest()->get();
-
-        return response()->json(['messages' => $messages]);
+        return response()->json([
+            'messages' => $conversation->messages()->with('user')->oldest()->get(),
+        ]);
     }
 }

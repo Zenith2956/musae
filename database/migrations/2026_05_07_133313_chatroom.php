@@ -20,6 +20,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('conversation_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->timestamps();
         });
 
         Schema::create('messages', function (Blueprint $table) {

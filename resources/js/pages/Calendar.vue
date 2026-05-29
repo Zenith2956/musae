@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { VueCal } from 'vue-cal'
+import { VueCal, addDatePrototypes } from 'vue-cal'
 import 'vue-cal/style'
+
 import { Head, usePage } from '@inertiajs/vue3'
 import AppLayout from '@/layouts/AppLayout.vue'
-import { addDatePrototypes } from 'vue-cal'
 import AddEventForm from '@/components/AddEventForm.vue'
 import EditEventForm from '@/components/EditEventForm.vue'
 
 addDatePrototypes()
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+/* ─── Types ─────────────────────────────────────────────────────────────── */
 
 interface CalendarEvent {
   id?: string
@@ -24,36 +24,36 @@ interface CalendarEvent {
   end: Date
 }
 
-// ─── Auth / Page ──────────────────────────────────────────────────────────────
+/* ─── Auth ─────────────────────────────────────────────────────────────── */
 
 const page = usePage<{ currentUserId: number }>()
 const currentUserId = page.props.currentUserId
 
-// ─── CSRF helper ──────────────────────────────────────────────────────────────
+/* ─── Helpers ───────────────────────────────────────────────────────────── */
 
 const csrf = () =>
   document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? ''
 
 const jsonHeaders = () => ({
   'Content-Type': 'application/json',
-  'Accept': 'application/json',
+  Accept: 'application/json',
   'X-CSRF-TOKEN': csrf(),
 })
 
-// ─── Remote data ──────────────────────────────────────────────────────────────
+const toISO = (d: any) => (d instanceof Date ? d : new Date(d)).toISOString()
+
+/* ─── Remote data ───────────────────────────────────────────────────────── */
 
 const sheetOptions = ref<{ id: number; name: string }[]>([])
 const instrumentOptions = ref<{ id: number; name: string }[]>([])
 
 const fetchSheets = async () => {
-  const res = await fetch('/calendar/sheets')
-  sheetOptions.value = await res.json()
+  sheetOptions.value = await (await fetch('/calendar/sheets')).json()
 }
 
 const fetchInstruments = async () => {
   try {
-    const res = await fetch('/calendar/instruments')
-    instrumentOptions.value = await res.json()
+    instrumentOptions.value = await (await fetch('/calendar/instruments')).json()
   } catch (e) {
     console.error('❌ FETCH INSTRUMENTS ERROR', e)
   }
@@ -62,7 +62,7 @@ const fetchInstruments = async () => {
 fetchSheets()
 fetchInstruments()
 
-// ─── Events ───────────────────────────────────────────────────────────────────
+/* ─── Events ───────────────────────────────────────────────────────────── */
 
 const events = ref<CalendarEvent[]>([])
 const currentView = ref<any>(null)
@@ -97,8 +97,7 @@ const onViewChange = (view: any) => {
   fetchEvents(view.start, view.end)
 }
 
-// ─── Dialog state ─────────────────────────────────────────────────────────────
-
+/* ─── Dialog state ─────────────────────────────────────────────────────── */
 
 type DialogMode = null | 'view' | 'edit' | 'create'
 
@@ -114,7 +113,7 @@ const closeDialog = () => {
   editingEvent.value = null
 }
 
-// ─── Clic sur un événement → mode lecture ────────────────────────────────────
+/* ─── Open event (view mode) ───────────────────────────────────────────── */
 
 const openDialog = (payload: any) => {
   const event = payload?.event ?? payload
@@ -124,7 +123,7 @@ const openDialog = (payload: any) => {
   showDialog.value = true
 }
 
-// ─── Depuis le mode lecture → passer en édition ───────────────────────────────
+/* ─── Switch to edit mode ─────────────────────────────────────────────── */
 
 const startEdit = () => {
   if (!selectedEvent.value) return
@@ -132,10 +131,9 @@ const startEdit = () => {
   dialogMode.value = 'edit'
 }
 
-// ─── Drag-to-create → mode création ──────────────────────────────────────────
+/* ─── Drag-to-create ───────────────────────────────────────────────────── */
 
 const onEventCreate = ({ event }: any) => {
-  selectedEvent.value = null
   editingEvent.value = {
     title: '',
     instrument_id: null,
@@ -144,14 +142,12 @@ const onEventCreate = ({ event }: any) => {
     start: new Date(event?.start ?? Date.now()),
     end: new Date(event?.end ?? Date.now()),
   }
+  selectedEvent.value = null
   dialogMode.value = 'create'
   showDialog.value = true
 }
 
-// ─── Save (create or update) ──────────────────────────────────────────────────
-
-const toISO = (d: any) =>
-  (d instanceof Date ? d : new Date(d)).toISOString()
+/* ─── Save (create or update) ─────────────────────────────────────────── */
 
 const saveEvent = async () => {
   if (!editingEvent.value) return
@@ -174,6 +170,7 @@ const saveEvent = async () => {
     headers: jsonHeaders(),
     body: JSON.stringify(payload),
   })
+
   const data = await res.json()
 
   if (isUpdate) {
@@ -187,7 +184,7 @@ const saveEvent = async () => {
   await fetchEvents(currentView.value.start, currentView.value.end)
 }
 
-// ─── Delete event ─────────────────────────────────────────────────────────────
+/* ─── Delete ───────────────────────────────────────────────────────────── */
 
 const deleteEvent = async (id: string) => {
   try {
@@ -203,7 +200,7 @@ const deleteEvent = async (id: string) => {
   await fetchEvents(currentView.value.start, currentView.value.end)
 }
 
-// ─── Drag & drop / resize ─────────────────────────────────────────────────────
+/* ─── Drag & drop / resize ───────────────────────────────────────────── */
 
 const onEventChange = async ({ event }: any) => {
   if (!event.id) return
@@ -228,7 +225,7 @@ const onEventChange = async ({ event }: any) => {
   }
 }
 
-// ─── Add dialog (bouton toolbar) ─────────────────────────────────────────────
+/* ─── Add dialog (toolbar button) ─────────────────────────────────────── */
 
 const showAddDialog = ref(false)
 const newEventData = ref<Record<string, any>>({})
@@ -244,6 +241,8 @@ const openAddDialog = () => {
     time: '08:00',
     duration: 60,
     sheet_id: null,
+    instrument_id: null,
+    link: '',
     reminder: false,
     days: [],
     repeatEnd: '',
@@ -261,7 +260,7 @@ const submitNewEvent = async () => {
   const slots: { start: Date; end: Date }[] = []
 
   if (d.days?.length && d.repeatEnd) {
-    const selectedDayNums = (d.days as string[]).map((k: string) => DAY_MAP[k])
+    const selectedDayNums = d.days.map((k: string) => DAY_MAP[k])
     const rangeEnd = new Date(d.repeatEnd + 'T23:59:59')
     const cursor = new Date(makeStart(d.date))
 
@@ -298,43 +297,62 @@ const submitNewEvent = async () => {
   await fetchEvents(currentView.value.start, currentView.value.end)
 }
 </script>
-
 <template>
 
   <Head title="Calendrier" />
+
   <AppLayout>
     <div class="calendar-page">
 
-      <!-- ── Toolbar ───────────────────────────────────────── -->
+      <!-- Toolbar -->
       <div class="toolbar">
-        <button class="btn-add" @click="openAddDialog">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="icon">
-            <path
-              d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
-          </svg>
-          Ajouter un événement
-        </button>
+        <div class="toolbar-right">
+          <button class="btn-yellow btn-add" @click="openAddDialog">
+            Ajouter un événement
+          </button>
+        </div>
       </div>
 
-      <!-- ── Calendar ──────────────────────────────────────── -->
-      <vue-cal ref="vuecalRef" :events="events" :drag-to-create-event="true" :resizable-events="true"
-        :drag-and-drop="true" :time-from="8 * 60" :time-to="21 * 60" :snap-to-interval="5" :editable-events="true"
-        :views="['day', 'week', 'month']" events-on-month-view @event-drop="onEventChange" @event-resize="onEventChange"
-        @ready="onReady" @view-change="onViewChange" @event-create="onEventCreate" @event-click="openDialog"
-        @event-change="onEventChange" class="cal" />
+      <!-- Calendar -->
+      <vue-cal
+  ref="vuecalRef"
+  class="vuecal cal"
+  :events="events"
+  :views="['day', 'week', 'month']"
+  :drag-to-create-event="true"
+  :drag-and-drop="true"
+  :resizable-events="true"
+  :editable-events="true"
+  :time-from="7 * 60"
+  :time-to="21 * 60"
+  :scroll-to-time="7 * 60"
+  :snap-to-interval="5"
+  events-on-month-view
+  @ready="onReady"
+  @view-change="onViewChange"
+  @event-click="openDialog"
+  @event-create="onEventCreate"
+  @event-drop="onEventChange"
+  @event-resize="onEventChange"
+  @event-change="onEventChange"
+/>
 
-      <!-- ── Dialog principale (lecture / édition / création) ── -->
-      <w-dialog v-model="showDialog" title="" :width="440" class="add-dialog">
+      <!-- Dialog principale -->
+      <w-dialog v-model="showDialog" :width="440" class="add-dialog">
+
         <!-- Mode lecture -->
-        <div v-if="dialogMode === 'view' && selectedEvent" class="form-wrap" style="box-shadow: none;">
+        <div v-if="dialogMode === 'view' && selectedEvent" class="form-wrap" style="box-shadow:none;">
           <div class="form-header">
             <h1 class="form-title">{{ selectedEvent.title }}</h1>
           </div>
+
           <div class="form-body">
+
             <div class="field-row">
               <span class="field-label">Instrument</span>
               <span class="field-value">{{ selectedEvent.instrument || '—' }}</span>
             </div>
+
             <div class="field-row">
               <span class="field-label">Horaire</span>
               <span class="field-value">
@@ -343,35 +361,40 @@ const submitNewEvent = async () => {
                 {{ selectedEvent.end.toLocaleString('fr-FR') }}
               </span>
             </div>
+
             <div class="field-row">
               <span class="field-label">Partition</span>
               <span class="field-value">{{ selectedEvent.sheet || '—' }}</span>
             </div>
+
             <div v-if="selectedEvent.link" class="field-row">
               <span class="field-label">Lien</span>
-              <a :href="selectedEvent.link" target="_blank" class="link">{{ selectedEvent.link }}</a>
+              <a :href="selectedEvent.link" target="_blank" class="link">
+                {{ selectedEvent.link }}
+              </a>
             </div>
-            <div class="dialog-actions" style="padding-top: .75rem; border-top: 1px solid #f3f4f6; margin-top: .25rem;">
+
+            <div class="dialog-actions between">
               <div class="btn-group">
                 <button class="btn btn-ghost" @click="closeDialog">Fermer</button>
-                <button class="btn-submit" style="width: auto; padding: .65rem 1.6rem; margin-top: 0;"
-                  @click="startEdit">
+                <button class="btn-submit" style="width:auto" @click="startEdit">
                   MODIFIER
                 </button>
               </div>
             </div>
+
           </div>
         </div>
 
-        <!-- Mode édition ou création -->
+        <!-- Mode édition / création -->
         <EditEventForm v-if="(dialogMode === 'edit' || dialogMode === 'create') && editingEvent"
           :model-value="editingEvent" @update:model-value="editingEvent = $event" :sheet-options="sheetOptions"
           :instrument-options="instrumentOptions" :is-new="dialogMode === 'create'" @save="saveEvent"
           @delete="deleteEvent" @cancel="closeDialog" />
       </w-dialog>
 
-      <!-- ── Dialog : AddEventForm (bouton toolbar) ─────────── -->
-      <w-dialog v-model="showAddDialog" title="" :width="380" class="add-dialog">
+      <!-- Dialog AddEventForm -->
+      <w-dialog v-model="showAddDialog" :width="380" class="add-dialog">
         <AddEventForm v-model="newEventData" :sheet-options="sheetOptions" :instrument-options="instrumentOptions"
           @submit="submitNewEvent" />
       </w-dialog>
