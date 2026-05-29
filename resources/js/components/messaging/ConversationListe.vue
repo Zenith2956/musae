@@ -12,9 +12,15 @@ const page = usePage();
 const selectedId = page.props.selectedConversation ?? null;
 
 function displayName(conv) {
-    const others = conv.participants?.filter(p => p.id !== props.currentUserId);
-    return others?.length ? others.map(p => p.name).join(', ') : '—';
+    const others = conv.participants ?? [];
+
+    if (others.length === 1) return others[0].name;
+    if (others.length === 2) return `${others[0].name}, ${others[1].name}`;
+    if (others.length > 2) return `${others[0].name}, ${others[1].name} +${others.length - 2}`;
+
+    return 'Conversation';
 }
+
 function initials(name) {
     return name.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase();
 }
@@ -24,7 +30,10 @@ function initials(name) {
     <div class="conv-list">
         <div v-for="conv in conversations" :key="conv.id" class="conv-item" :class="{ active: conv.id === selectedId }"
             @click="emit('select', conv)">
-            <div class="conv-avatar">{{ initials(displayName(conv)) }}</div>
+            <div class="conv-avatar">
+                {{ conv.participants.length > 1 ? 'G' : initials(displayName(conv)) }}
+            </div>
+
             <div class="conv-info">
                 <div class="conv-name">{{ displayName(conv) }}</div>
                 <div class="conv-preview">{{ conv.last_message?.content ?? 'Nouvelle conversation' }}</div>
