@@ -120,7 +120,7 @@ class MessagerieController extends Controller
         if ($request->expectsJson()) {
             return response()->json([
                 'message' => $message->load('user'),
-            ]);
+            ], 201);
         }
 
         return redirect()->route('messagerie.show', $conversation);

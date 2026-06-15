@@ -14,6 +14,7 @@ class Training extends Model
         'instrument_id',
         'link',
         'date_training',
+        'end_training',
         'duration',
         'training_media_id',
         'user_id',
