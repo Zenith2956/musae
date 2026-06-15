@@ -39,16 +39,17 @@ const footerNavItems: NavItem[] = [
         href: '/mentions-legales',
     },
     {
-        title: 'Privacy policy',
-        href: '/privacy-policy',
+        title: 'Politique de confidentialité',
+        href: '/politique-de-confidentialite',
     },
 ];
 </script>
 
 <template>
-    <Sidebar collapsible="icon" variant="inset" class="bg-[#1a9b9b] text-white">
+    <Sidebar collapsible="icon" variant="inset">
+        <section class="sidebar-layout">
         <SidebarHeader class="flex flex-col items-center gap-4 px-4 py-6">
-            <SidebarMenu>
+            <!-- <SidebarMenu>
                 <SidebarMenuItem>
                     <SidebarMenuButton size="lg" as-child>
                         <Link :href="dashboard.url()">
@@ -56,16 +57,18 @@ const footerNavItems: NavItem[] = [
                         </Link>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
-            </SidebarMenu>
+            </SidebarMenu> -->
 
             <!-- Mon compte -->
             <SidebarMenu>
                 <SidebarMenuItem>
-                    <SidebarMenuButton as-child class="rounded-full bg-[#f0b429] px-4 py-2 text-center font-semibold text-white hover:bg-[#e0a419] hover:text-white">
+                    <NavUser class="primary-btn" />
+                    <!-- <SidebarMenuButton as-child class="rounded-full bg-[#f0b429] px-4 py-2 text-center font-semibold text-white hover:bg-[#e0a419] hover:text-white">
+
                         <Link :href="dashboard.url()" class="flex items-center justify-center gap-2" style="color: black;">
                             Mon compte
                         </Link>
-                    </SidebarMenuButton>
+                    </SidebarMenuButton> -->
                 </SidebarMenuItem>
             </SidebarMenu>
 
@@ -92,7 +95,7 @@ const footerNavItems: NavItem[] = [
                         <SidebarMenuItem v-for="item in mainNavItems">
                             <SidebarMenuButton as-child class="text-xl font-light text-white hover:bg-transparent hover:opacity-80">
                                 <Link :href="item.href">
-                                    {{ item.title }}
+                                    <h2>{{ item.title }}</h2>
                                 </Link>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
@@ -106,13 +109,13 @@ const footerNavItems: NavItem[] = [
                 <SidebarMenuItem v-for="item in footerNavItems">
                     <SidebarMenuButton as-child class="text-xs text-white/70 hover:bg-transparent hover:text-white">
                         <Link :href="item.href">
-                            {{ item.title }}
+                            <h3>{{ item.title }}</h3>
                         </Link>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
             </SidebarMenu>
-            <NavUser />
         </SidebarFooter>
+        </section>
     </Sidebar>
     <slot />
 </template>

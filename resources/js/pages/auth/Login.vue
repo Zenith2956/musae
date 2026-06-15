@@ -22,10 +22,10 @@ defineProps<{
 
 <template>
     <AuthBase
-        title="Log in to your account"
-        description="Enter your email and password below to log in"
+        title="Se connecter à votre compte"
+        description="Entrez vos informations de connexion pour accéder à votre compte"
     >
-        <Head title="Log in" />
+        <Head title="Se connecter" />
 
         <div
             v-if="status"
@@ -65,7 +65,7 @@ defineProps<{
                             class="text-sm"
                             :tabindex="5"
                         >
-                            Forgot password?
+                            Mot de passe oublié ?
                         </TextLink>
                     </div>
                     <PasswordInput
@@ -82,28 +82,28 @@ defineProps<{
                 <div class="flex items-center justify-between">
                     <Label for="remember" class="flex items-center space-x-3">
                         <Checkbox id="remember" name="remember" :tabindex="3" />
-                        <span>Remember me</span>
+                        <span>Se rappeller</span>
                     </Label>
                 </div>
 
                 <Button
                     type="submit"
-                    class="mt-4 w-full"
+                    class="btn-log"
                     :tabindex="4"
                     :disabled="processing"
                     data-test="login-button"
                 >
                     <Spinner v-if="processing" />
-                    Log in
+                    Se connecter
                 </Button>
             </div>
 
             <div
-                class="text-center text-sm text-muted-foreground"
+                class="text-center text-sm"
                 v-if="canRegister"
             >
-                Don't have an account?
-                <TextLink :href="register()" :tabindex="5">Sign up</TextLink>
+                Pas encore de compte ?
+                <TextLink class="btn-log" :href="register()" :tabindex="5">S'inscrire</TextLink>
             </div>
         </Form>
     </AuthBase>

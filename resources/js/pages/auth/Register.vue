@@ -22,8 +22,8 @@ const selectedRole = ref(0);
 
 <template>
     <AuthBase
-        title="Create an account"
-        description="Enter your details below to create your account"
+        title="Créer un compte"
+        description="Entrez vos informations ci-dessous pour créer votre compte"
     >
         <Head title="Register" />
 
@@ -124,23 +124,23 @@ const selectedRole = ref(0);
 
                 <Button
                     type="submit"
-                    class="mt-2 w-full"
+                    class="btn-log"
                     tabindex="5"
                     :disabled="processing"
                     data-test="register-user-button"
                 >
                     <Spinner v-if="processing" />
-                    Create account
+                    Créer un compte
                 </Button>
             </div>
 
-            <div class="text-center text-sm text-muted-foreground">
-                Already have an account?
+            <div class="text-center text-sm">
+                Déjà un compte ?
                 <TextLink
                     :href="login()"
-                    class="underline underline-offset-4"
+                    class="btn-log"
                     :tabindex="6"
-                    >Log in</TextLink
+                    >Se connecter</TextLink
                 >
             </div>
         </Form>

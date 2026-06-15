@@ -1,0 +1,79 @@
+h1{
+    font-size: 5em;
+    font-weight: 600;
+}
+
+nav{
+  background-color: var(--primary);
+  height: 60px;
+  display: flex;
+  
+  padding: 1em 0;
+
+  font-weight: 600;
+  font-size: 1em;
+  
+  header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    width: 90%;
+    margin: 0 auto;
+  }
+  header > div:last-child{
+    display: flex;
+    gap: 20px;
+    justify-content: flex-end;
+  }
+}
+
+.btn-primary {
+    background: var(--secondary);
+    color: var(--primary-foreground);
+    box-shadow: 4px 4px 0 1px var(--primary);
+    border-radius: 2px;
+    padding: 0.5em 0.7em;
+}
+
+.btn-primary:hover {
+    filter: brightness(1.1);
+}
+
+.btn-primary:active {
+    transform: translateY(5px) translateX(5px);
+    box-shadow: 0px 0px 0 0px var(--primary);
+    box-shadow: inset 2px 2px 8px 0px color-mix(var(--teal-dark), var(--yellow) 80%);
+}
+
+.btn-log{
+    background: var(--yellow);
+    color: var(--dark);
+    font-weight: 600;
+    text-align: center;
+    border-radius: 5em;
+    padding: 0.5em 1em;
+}
+
+.btn-log:hover{
+    filter: brightness(1.1);
+}
+
+.auth-layout{
+    background-color: var(--teal);
+    color: var(--white);    
+}
+
+.logo-svg{
+    max-width: none !important;
+    width: 300px;
+    height:auto;
+}
+
+.sidebar-layout{
+    background-color: var(--primary);
+    color: var(--white);
+    width: 80%;
+    margin: 0 auto;
+    padding: 30px;
+}

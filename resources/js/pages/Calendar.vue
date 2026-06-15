@@ -303,11 +303,12 @@ const submitNewEvent = async () => {
 
   <AppLayout>
     <div class="calendar-page">
+      <h1>Calendrier</h1>
 
       <!-- Toolbar -->
       <div class="toolbar">
         <div class="toolbar-right">
-          <button class="btn-yellow btn-add" @click="openAddDialog">
+          <button class="btn-primary btn-add" @click="openAddDialog">
             Ajouter un événement
           </button>
         </div>

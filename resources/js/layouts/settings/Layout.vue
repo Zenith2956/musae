@@ -69,6 +69,16 @@ const { isCurrentOrParentUrl } = useCurrentUrl();
             <div class="flex-1 md:max-w-2xl">
                 <section class="max-w-xl space-y-12">
                     <slot />
+                    <Link
+                        class="block w-full cursor-pointer"
+                        :href="logout()"
+                        @click="handleLogout"
+                        as="button"
+                        data-test="logout-button"
+                    >
+                        <LogOut class="mr-2 h-4 w-4" />
+                        Log out
+                    </Link>
                 </section>
             </div>
         </div>

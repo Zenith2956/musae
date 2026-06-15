@@ -3,6 +3,7 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import type { DefineComponent } from 'vue';
 import { createApp, h } from 'vue';
 import '../css/app.css';
+import '../css/main.css'
 import { initializeTheme } from '@/composables/useAppearance';
 import WaveUI from 'wave-ui';
 import 'wave-ui/dist/wave-ui.css';
