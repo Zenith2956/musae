@@ -6,6 +6,14 @@ use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Fortify\Features;
 
+/**
+ * @method \Illuminate\Testing\TestResponse get(string $uri, array $headers = [])
+ * @method \Illuminate\Testing\TestResponse post(string $uri, array $data = [], array $headers = [])
+ * @method void assertGuest()
+ * @method void assertAuthenticated()
+ */
+
+
 abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
