@@ -1,12 +1,10 @@
 [build]
 builder = "nixpacks"
+buildCommand = "npm ci && npm run build && composer install --no-dev --optimize-autoloader"
 
 [build.nixpacks]
 php_version = "8.4"
 node_version = "22.12.0"
-
-[build]
-buildCommand = "npm ci && npm run build && composer install --no-dev --optimize-autoloader"
 
 [start]
 cmd = "php artisan serve --host 0.0.0.0 --port $PORT"
