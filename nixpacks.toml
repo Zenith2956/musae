@@ -5,7 +5,7 @@ nixPkgs = [
   "php84Extensions.curl",
   "php84Extensions.mbstring",
   "php84Extensions.pdo_mysql",
-  "composer"
+  "php84Packages.composer"
 ]
 
 [phases.build]
