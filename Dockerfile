@@ -1,8 +1,20 @@
+# Étape 1 : build des assets frontend
+FROM node:20-bookworm-slim AS frontend
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm ci
+
+COPY . .
+RUN npm run build
+
+
+# Étape 2 : image PHP Laravel
 FROM php:8.3-apache
 
 WORKDIR /var/www/html
 
-# Installation des dépendances système et extensions PHP utiles pour Laravel
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -25,29 +37,25 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Active mod_rewrite pour Laravel
 RUN a2enmod rewrite
 
-# Configure Apache pour pointer vers /public
 RUN sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf
 
-# Autorise les .htaccess Laravel
 RUN printf '<Directory /var/www/html/public>\n\
     AllowOverride All\n\
     Require all granted\n\
 </Directory>\n' > /etc/apache2/conf-available/laravel.conf \
     && a2enconf laravel
 
-# Installation de Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Copie du code
 COPY . .
 
-# Installation des dépendances PHP
+# Copie les assets générés par Vite
+COPY --from=frontend /app/public/build ./public/build
+
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Permissions Laravel
 RUN chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
 
