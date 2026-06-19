@@ -31,10 +31,17 @@ RUN apt-get update && apt-get install -y \
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # Node 20 depuis l'image officielle Node
+# Node.js + npm depuis l'image officielle Node
 COPY --from=node:20-bookworm-slim /usr/local/bin/node /usr/local/bin/node
-COPY --from=node:20-bookworm-slim /usr/local/bin/npm /usr/local/bin/npm
 COPY --from=node:20-bookworm-slim /usr/local/bin/npx /usr/local/bin/npx
 COPY --from=node:20-bookworm-slim /usr/local/lib/node_modules /usr/local/lib/node_modules
+
+# Recréation propre des commandes npm et npx
+RUN ln -sf /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
+    && ln -sf /usr/local/lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx \
+    && node -v \
+    && npm -v
+    
 
 # Copie du projet
 COPY . .
