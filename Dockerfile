@@ -1,5 +1,5 @@
 # Étape 1 : build Laravel + assets frontend
-FROM php:8.3-cli AS builder
+FROM php:8.4-apache AS builder
 
 WORKDIR /app
 
