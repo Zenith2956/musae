@@ -20,6 +20,10 @@ import type { NavItem } from '@/types';
 
 const mainNavItems: NavItem[] = [
     {
+        title: 'Dashboard',
+        href: dashboard.url(),
+    },
+    {
         title: 'Bibliothèque',
         href: library.url(),
     },

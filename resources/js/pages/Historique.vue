@@ -72,9 +72,9 @@ const grouped = computed(() => {
     <AppLayout>
         <div class="container mx-auto p-4">
 
-            <h1 class="text-2xl font-bold">Historique de vos entraînements</h1>
+            <h1>Historique de vos entraînements</h1>
 
-            <div v-for="(trainings, name) in grouped" :key="name" class="mt-4">
+            <div v-for="(trainings, name) in grouped" :key="name" class="historique-group">
 
                 <HistoriqueItem
                     :name="name"

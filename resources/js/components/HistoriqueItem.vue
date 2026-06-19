@@ -25,7 +25,7 @@ const last = props.trainings[0] // le plus récent
             <p class="history-meta">Durée : {{ last.duration }} min</p>
         </div>
 
-        <button class="history-btn" @click="emit('open')">
+        <button class="btn-primary" @click="emit('open')">
             Afficher
         </button>
     </div>

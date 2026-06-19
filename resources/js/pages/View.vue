@@ -44,10 +44,6 @@ export default {
 </template>
 
 <style>
-.container{
-  width: 90%;
-  margin: 0 auto;
-}
 .sheet-image {
   width: 200px;
   height: auto;

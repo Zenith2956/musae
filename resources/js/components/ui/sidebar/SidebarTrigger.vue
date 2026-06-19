@@ -9,7 +9,7 @@ const props = defineProps<{
   class?: HTMLAttributes["class"]
 }>()
 
-const { isMobile, state, toggleSidebar } = useSidebar()
+const { isMobile, state, openMobile, toggleSidebar } = useSidebar()
 </script>
 
 <template>
@@ -19,9 +19,10 @@ const { isMobile, state, toggleSidebar } = useSidebar()
     variant="ghost"
     size="icon"
     :class="cn('h-7 w-7', props.class)"
+    :style="{ color: 'var(--yellow)' }"
     @click="toggleSidebar"
   >
-    <PanelLeftOpen v-if="isMobile || state === 'collapsed'" />
+    <PanelLeftOpen v-if="(isMobile && !openMobile) || state === 'collapsed'" />
     <PanelLeftClose v-else />
     <span class="sr-only">Toggle sidebar</span>
   </Button>

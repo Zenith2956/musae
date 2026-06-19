@@ -107,21 +107,12 @@ function initials(name) {
             ">
                 <!-- Titre + bouton nouvelle conv -->
                 <div style="padding: 1.25rem; border-bottom: 1.5px solid #e5e7eb;">
-                    <h1 style="
-                        font-family: 'Playfair Display', serif;
-                        font-size: 1.35rem; font-weight: 900;
-                        color: #111827; margin: 0 0 0.85rem;
-                    ">Messagerie</h1>
+                    <h1 style="font-size: 4em;">Messagerie</h1>
 
-                    <button @click="showSearch = !showSearch" style="
-                            width: 100%; display: flex; align-items: center;
-                            justify-content: center; gap: 0.4rem;
-                            padding: 0.6rem 1rem; background: #facc15;
-                            border: none; border-radius: 0.75rem;
-                            font-family: 'DM Sans', sans-serif;
-                            font-size: 0.875rem; font-weight: 800;
-                            color: #000; cursor: pointer; transition: background 0.15s;
-                        " @mouseenter="e => e.currentTarget.style.background = '#eab308'"
+                    <button @click="showSearch = !showSearch"
+                        class="btn-log"
+                        style="margin-top: 0.75rem; display:flex; align-items:center; gap: 10px; font-weight:700;"
+                        @mouseenter="e => e.currentTarget.style.background = '#eab308'"
                         @mouseleave="e => e.currentTarget.style.background = '#facc15'">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="3" stroke-linecap="round" stroke-linejoin="round">

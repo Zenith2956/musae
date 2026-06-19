@@ -28,14 +28,40 @@ class SheetController extends Controller
 
     public function store(Request $request)
     {
-        Sheet::create([
-        'name' => $request->input('name'), 
-        'link' => $request->input('link'), 
-        'instrument_id' => $request->input('instrument_id'),
-        'composer' => $request->input('composer') ?? null,
-        'user_id' => Auth::id(),
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'link' => 'required|string',
+            'instrument_id' => 'nullable|integer',
+            'composer' => 'nullable|string|max:255',
+            'bpm' => 'nullable|integer|between:50,200',
+            'gamme' => 'nullable|string|max:255',
+            'proficiency_level' => 'nullable|integer|min:1|max:5',
+            'style' => 'nullable|string|max:255',
         ]);
-         return redirect('/library');
+
+        $data['user_id'] = Auth::id();
+
+        Sheet::create($data);
+
+        return redirect('/library');
+    }
+
+    public function update(Request $request, Sheet $sheet)
+    {
+        $data = $request->validate([
+            'name' => 'sometimes|required|string|max:255',
+            'link' => 'sometimes|required|string',
+            'instrument_id' => 'nullable|integer',
+            'composer' => 'nullable|string|max:255',
+            'bpm' => 'nullable|integer|between:50,200',
+            'gamme' => 'nullable|string|max:255',
+            'proficiency_level' => 'nullable|integer|min:1|max:5',
+            'style' => 'nullable|string|max:255',
+        ]);
+
+        $sheet->update($data);
+
+        return redirect()->route('sheet.detail', $sheet);
     }
 
     public function listInstruments()

@@ -303,17 +303,14 @@ const submitNewEvent = async () => {
 
   <AppLayout>
     <div class="calendar-page">
-      <h1>Calendrier</h1>
-
-      <!-- Toolbar -->
-      <div class="toolbar">
-        <div class="toolbar-right">
-          <button class="btn-primary btn-add" @click="openAddDialog">
-            Ajouter un événement
-          </button>
-        </div>
+      
+      <div class="container mx-auto flex justify-between items-center">
+        <h1>Calendrier</h1>
+        <button class="btn-primary btn-add" @click="openAddDialog">
+          +
+        </button>
       </div>
-
+      
       <!-- Calendar -->
       <vue-cal
   ref="vuecalRef"

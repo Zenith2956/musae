@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
@@ -8,7 +10,6 @@
 @tailwind utilities;
 
 /* Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600;700&display=swap');
 
 /* Theme tokens */
 @theme inline {
@@ -116,7 +117,6 @@
     --sidebar: #111;
 } */
 
-@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
 
 @font-face {
     font-family: Berylium; /* set name */
@@ -157,19 +157,30 @@
         background: var(--background);
         color: var(--foreground);
         font-family: "Lato", sans-serif;
+        font-size: 1em;
     }
 
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-        font-family: 'Berylium';
-        font-weight: 700;
-        font-style: normal;
-        letter-spacing: -0.01em;
-    }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Berylium';
+    font-weight: 700;
+    font-style: normal;
+    letter-spacing: -0.01em;
+    line-height: 1;
+}
+
+h1{
+    margin: 0.5em 0;
+}
+
+h2{
+    font-size: 1.7em;
 }
 
 /* Layout */
@@ -177,7 +188,7 @@
     width: 90%;
     max-width: 1100px;
     margin: 0 auto;
-    padding: 2rem 0;
+    padding: 2em 0;
 }
 
 .calendar-page {
@@ -324,25 +335,7 @@
     white-space: nowrap;
 }
 
-/* Cards */
-.sheet-card {
-    display: block;
-    text-decoration: none;
-    color: inherit;
-    cursor: pointer;
-    background: var(--card);
-    border: 1.5px solid var(--border);
-    border-radius: .75rem;
-    padding: .75rem;
-    box-shadow: var(--shadow-sm);
-    transition: box-shadow var(--transition), border-color var(--transition), transform var(--transition);
-}
 
-.sheet-card:hover {
-    box-shadow: var(--shadow-md);
-    border-color: var(--teal);
-    transform: translateY(-2px);
-}
 
 .sheet-image {
     width: 100%;
@@ -356,7 +349,6 @@
 
 /* Training card */
 .training-card {
-    font-family: 'DM Sans', sans-serif;
     border-radius: 1.25rem;
     overflow: hidden;
     box-shadow: var(--shadow-md);
@@ -367,7 +359,6 @@
 .training-card__header {
     background: var(--teal);
     padding: 1.25rem 1.5rem 2rem;
-    clip-path: ellipse(110% 100% at 50% 0%);
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -381,11 +372,6 @@
     margin: 0;
     letter-spacing: -0.01em;
     line-height: 1.2;
-}
-
-.training-card__badge {
-    font-size: 1.5rem;
-    margin-top: .1rem;
 }
 
 .training-card__body {
@@ -1021,19 +1007,20 @@
 /* Historique — carte principale */
 .history-card {
     background: #fff;
-    border-radius: 1rem;
+    border-radius: 5px;
     padding: 1.25rem 1.5rem;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    border: 1.5px solid var(--color-primary);
+    /* box-shadow: 0 4px 5px rgba(0, 0, 0, 0.08); */
     display: flex;
     justify-content: space-between;
     align-items: center;
     transition: transform .12s, box-shadow .12s;
-    margin-bottom: 1rem;
+    margin-bottom: 1em;
 }
 
 .history-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.12);
 }
 
 .history-card-left {
@@ -1053,34 +1040,13 @@
     color: #6b7280;
 }
 
-.history-btn {
-    background: var(--yellow);
-    color: #000;
-    font-weight: 800;
-    padding: .55rem 1.2rem;
-    border-radius: 9999px;
-    border: none;
-    cursor: pointer;
-    transition: background .12s, transform .08s;
-    font-family: 'DM Sans', sans-serif;
-    letter-spacing: .03em;
-}
-
-.history-btn:hover {
-    background: var(--yellow-dark);
-}
-
-.history-btn:active {
-    transform: scale(.96);
-}
-
 /* Historique — détail */
 .history-detail-card {
     background: #fff;
     padding: 1.5rem;
-    border-radius: 1rem;
-    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.12);
-    margin-top: 1rem;
+    border-radius: 5px;
+    border: 1.5px solid var(--color-primary);
+    margin: 1em 0;
 }
 
 .history-detail-title {

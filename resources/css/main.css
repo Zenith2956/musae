@@ -33,7 +33,12 @@ nav{
     color: var(--primary-foreground);
     box-shadow: 4px 4px 0 1px var(--primary);
     border-radius: 2px;
-    padding: 0.5em 0.7em;
+    padding: 0.5em 1em;
+    margin: 0.5em 0;
+    min-width: 40px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1.2em;
 }
 
 .btn-primary:hover {
@@ -73,7 +78,152 @@ nav{
 .sidebar-layout{
     background-color: var(--primary);
     color: var(--white);
-    width: 80%;
-    margin: 0 auto;
+    /* width: 100%; */
+    /* margin: 0 auto; */
     padding: 30px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: space-between;
+}
+
+/* partitions */
+
+.sheets-list{
+    margin: 1em 0;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 100%;
+    gap: 20px;
+}
+
+.sheet-image{
+    width: 100%;
+    height: 100px;
+    max-width: none;
+    object-fit: cover;
+    object-position: top;
+}
+.no-display{
+    display: none;
+}
+/* Cards */
+.sheet-card {    
+    text-decoration: none;
+    cursor: pointer;
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    width: 48%;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    transition: box-shadow var(--transition), border-color var(--transition), transform var(--transition);
+    h2{
+        background: var(--primary);
+        border-radius: 8px 8px 0 0;
+        color: var(--white);
+        padding: 0.3em;
+    }
+    a{
+        padding: 0.3em;
+    }
+}
+
+.sheet-card:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--teal);
+    transform: translateY(-2px);
+}
+
+input, select, textarea{
+    border: 1.5px solid var(--primary);
+    border-radius: 5px;
+    padding: 0.5em;
+}
+
+.bpm-label{
+    font-weight: 600;
+    color: var(--secondary);
+    font-size: 1.2em;
+    text-shadow: 1px 1px 0px var(--primary);
+    align-self: center;
+}
+
+.btn-sheet{
+    background: var(--secondary);
+    color: var(--primary-foreground);
+    box-shadow: 4px 4px 0 1px var(--primary);
+    border-radius: 2px;
+    padding: 0.5em 0.7em;
+    margin: 0.5em 0;
+}
+
+.sheet-edit{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+    div{
+        display: flex;
+        flex-direction: row;
+        gap: 20px;
+        align-items: center;
+    }
+}
+
+.filters{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    width: 100%;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 20px;
+}
+
+.sheet-details{
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    p{
+        width: 40%;
+    }
+    span{
+        font-weight: 600;
+        color: var(--primary);
+    }
+}
+
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 4em;
+    }
+    h2 {
+        font-size: 2em;
+    }
+    h3 {
+        font-size: 1.5em;
+    }
+    .sheet-card {
+        width: 47%;
+    }
+}
+
+.navbar{
+    background-color: var(--primary);
+}
+
+.logo{
+    height: 40px;
+    width: auto;
+    padding: 0.5em;
 }

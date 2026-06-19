@@ -15,7 +15,11 @@ class Sheet extends Model
         'link',
         'instrument_id',
         'composer',
-        'user_id'
+        'user_id',
+        'bpm',
+        'gamme',
+        'proficiency_level',
+        'style'
 
     ];
     public $timestamps = false;

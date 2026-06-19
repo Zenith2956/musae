@@ -12,8 +12,7 @@ defineProps({
     <div v-if="nextTraining" class="training-card">
 
         <div class="training-card__header">
-            <h2 class="training-card__title">Prochain entraînement</h2>
-            <span class="training-card__badge">🎯</span>
+            <h2 style="color: var(--white);">Prochain entraînement</h2>
         </div>
 
         <div class="training-card__body">
