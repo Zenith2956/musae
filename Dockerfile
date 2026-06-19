@@ -58,7 +58,7 @@ RUN npm run build
 
 
 # Étape 2 : image finale Apache + PHP
-FROM php:8.3-apache AS production
+FROM php:8.4-apache AS production
 
 WORKDIR /var/www/html
 
