@@ -1,0 +1,310 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Musae API",
+        "description": "Documentation de l'API Musae générée avec Swagger",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/calendar/events": {
+            "get": {
+                "tags": [
+                    "Calendar"
+                ],
+                "summary": "Liste des événements",
+                "operationId": "ba30003510f0ef24f6d56a59a6f93f9a",
+                "responses": {
+                    "200": {
+                        "description": "Liste des événements"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Calendar"
+                ],
+                "summary": "Créer un événement",
+                "operationId": "6910ca002a1313f67b33bf75b441759a",
+                "requestBody": {
+                    "description": "Données de l'événement",
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Événement créé"
+                    }
+                }
+            }
+        },
+        "/calendar/events/{id}": {
+            "put": {
+                "tags": [
+                    "Calendar"
+                ],
+                "summary": "Modifier un événement",
+                "operationId": "47efb808e1bc71504d92a3e2c7d0e82e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Événement mis à jour"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Calendar"
+                ],
+                "summary": "Supprimer un événement",
+                "operationId": "7071fc1508e6eba6ae601e4b580c50a4",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Événement supprimé"
+                    }
+                }
+            }
+        },
+        "/calendar/sheets": {
+            "get": {
+                "tags": [
+                    "Calendar"
+                ],
+                "summary": "Liste des partitions disponibles",
+                "operationId": "2291f76087904e499350fffcc5d653b2",
+                "responses": {
+                    "200": {
+                        "description": "Liste des partitions"
+                    }
+                }
+            }
+        },
+        "/test": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Route de test Swagger",
+                "operationId": "bf3dca078647b662f97198aea9edc2c1",
+                "responses": {
+                    "200": {
+                        "description": "Réponse OK"
+                    }
+                }
+            }
+        },
+        "/historique": {
+            "get": {
+                "tags": [
+                    "Historique"
+                ],
+                "summary": "Afficher l'historique",
+                "operationId": "afab0d3a16b07c136cf7a1b4489aecbf",
+                "responses": {
+                    "200": {
+                        "description": "Historique récupéré"
+                    }
+                }
+            }
+        },
+        "/messagerie": {
+            "get": {
+                "tags": [
+                    "Messagerie"
+                ],
+                "summary": "Liste des conversations",
+                "operationId": "aa5002787c48a0a2e809225413728aa2",
+                "responses": {
+                    "200": {
+                        "description": "Conversations récupérées"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Messagerie"
+                ],
+                "summary": "Créer une conversation",
+                "operationId": "86fa9d8c3c7c755706a6539f9a81cd4b",
+                "requestBody": {
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Conversation créée"
+                    }
+                }
+            }
+        },
+        "/messagerie/{conversation}": {
+            "get": {
+                "tags": [
+                    "Messagerie"
+                ],
+                "summary": "Afficher une conversation",
+                "operationId": "3da231d074b0e392fc666033d3a17204",
+                "parameters": [
+                    {
+                        "name": "conversation",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Conversation récupérée"
+                    }
+                }
+            }
+        },
+        "/messagerie/{conversation}/messages": {
+            "get": {
+                "tags": [
+                    "Messagerie"
+                ],
+                "summary": "Lister les messages",
+                "operationId": "84eb006589c21107dced790c99124015",
+                "parameters": [
+                    {
+                        "name": "conversation",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Messages récupérés"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Messagerie"
+                ],
+                "summary": "Envoyer un message",
+                "operationId": "480162449474994f3403a178c9932133",
+                "parameters": [
+                    {
+                        "name": "conversation",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "requestBody": {
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Message envoyé"
+                    }
+                }
+            }
+        },
+        "/messagerie/messages/{message}": {
+            "delete": {
+                "tags": [
+                    "Messagerie"
+                ],
+                "summary": "Supprimer un message",
+                "operationId": "4154300f227b86e0af9d193b6f0462a4",
+                "parameters": [
+                    {
+                        "name": "message",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Message supprimé"
+                    }
+                }
+            }
+        },
+        "/library": {
+            "get": {
+                "tags": [
+                    "Sheet"
+                ],
+                "summary": "Liste des partitions",
+                "operationId": "e51c1c7f26e5ede0c2e6ad0b0d43b6f5",
+                "responses": {
+                    "200": {
+                        "description": "Liste des partitions"
+                    }
+                }
+            }
+        },
+        "/sheet/{sheet}": {
+            "get": {
+                "tags": [
+                    "Sheet"
+                ],
+                "summary": "Détail d'une partition",
+                "operationId": "7d51fba96b5d865b51e41a4f00e8861e",
+                "parameters": [
+                    {
+                        "name": "sheet",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Détails de la partition"
+                    }
+                }
+            }
+        },
+        "/sheet/store": {
+            "post": {
+                "tags": [
+                    "Sheet"
+                ],
+                "summary": "Créer une partition",
+                "operationId": "64c517fe4b88d36748147623402dd407",
+                "requestBody": {
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Partition créée"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Calendar",
+            "description": "Gestion du calendrier et des entraînements"
+        },
+        {
+            "name": "Dashboard",
+            "description": "Endpoints du tableau de bord"
+        },
+        {
+            "name": "Historique",
+            "description": "Historique des entraînements"
+        },
+        {
+            "name": "Messagerie",
+            "description": "Système de messagerie interne"
+        },
+        {
+            "name": "Sheet",
+            "description": "Gestion des partitions"
+        }
+    ]
+}

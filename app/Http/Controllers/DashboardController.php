@@ -6,11 +6,23 @@ use Illuminate\Http\Request;
 use App\Models\Training;
 use Illuminate\Support\Carbon;
 
+use OpenApi\Attributes as OA;
+
 class DashboardController extends Controller
 {
+    #[OA\Get(
+        path: "/test",
+        summary: "Route de test Swagger",
+        tags: ["Test"]
+    )]
+    public function test()
+    {
+        return response()->json(["message" => "OK"]);
+    }
 
     public function index()
     {
+        
         $user = auth()->user();
 
         if (!$user) {

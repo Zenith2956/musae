@@ -20,18 +20,13 @@ defineProps<{
                         :href="home()"
                         class="flex flex-col items-center gap-2 font-medium"
                     >
-                        <div
-                            class="mb-1 flex h-9 w-9 items-center justify-center rounded-md"
-                        >
-                            <AppLogoIcon
-                                class="size-9 fill-current text-[var(--foreground)] dark:text-white"
-                            />
-                        </div>
+                    <AppLogoIcon
+                    />
                         <span class="sr-only">{{ title }}</span>
                     </Link>
                     <div class="space-y-2 text-center">
                         <h1 class="text-xl font-medium">{{ title }}</h1>
-                        <p class="text-center text-sm text-muted-foreground">
+                        <p class="text-center text-sm">
                             {{ description }}
                         </p>
                     </div>
@@ -41,3 +36,9 @@ defineProps<{
         </div>
     </div>
 </template>
+
+<style>
+h1{
+    font-size: 2em;
+}
+</style>

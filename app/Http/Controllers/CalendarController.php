@@ -72,6 +72,7 @@ class CalendarController extends BaseController
             'title' => 'required|string',
             'start' => 'required|date',
             'end' => 'required|date',
+            'end_training' => 'nullable|date',
             'instrument_id' => 'nullable|integer',
             'link' => 'nullable|string',
             'sheet_id' => 'nullable|integer',
@@ -94,7 +95,7 @@ class CalendarController extends BaseController
             'user_id' => $userId,
         ]);
 
-        return response()->json($this->formatEvent($training));
+        return response()->json($this->formatEvent($training), 201);
     }
 
     public function update(Request $request, $id)

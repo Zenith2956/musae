@@ -39,8 +39,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('library/instruments', [SheetController::class, 'listInstruments']);
     Route::get('/library', [SheetController::class, 'index']);
 
+    Route::inertia('/sheet/add', 'Sheets/AddSheet')->name('sheet.add');
+
 
     Route::get('/sheet/{sheet}', [SheetController::class, 'detail'])->name('sheet.detail');
+    Route::put('/sheet/{sheet}', [SheetController::class, 'update'])->name('sheet.update');
     Route::post('/sheet/store', [SheetController::class, 'store']);
 
 

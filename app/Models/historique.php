@@ -3,8 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
-class historique extends Model
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+class Historique extends Model
 {
-    //
+    use HasFactory;
+    protected $fillable = ['user_id', 'action', 'created_at'];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
