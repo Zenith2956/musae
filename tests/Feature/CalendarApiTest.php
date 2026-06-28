@@ -25,7 +25,6 @@ class CalendarApiTest extends TestCase
         $user = User::factory()->create();
         $this->actingAs($user);
 
-        // CRÉER les vraies dépendances
         $instrument = GenericInstrument::factory()->create();
         $sheet = Sheet::factory()->create();
 

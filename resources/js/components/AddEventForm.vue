@@ -72,17 +72,17 @@ watch([name, date, time, duration, link, sheet_id, instrument_id, reminder, days
     <!-- Body -->
     <div class="form-body">
 
-      <!-- Nom + Date -->
+      <!-- Nom -->
       <div class="row-inline">
         <input v-model="name" type="text" placeholder="Nom" class="input flex-1" />
+      </div>
+      
+      <!-- Horaire + Durée + Date -->
+      <div class="row-inline">
         <div class="date-group">
           <span class="label-inline">Date :</span>
           <input v-model="date" type="date" class="input input-sm" />
         </div>
-      </div>
-
-      <!-- Horaire + Durée -->
-      <div class="row-inline">
         <div class="time-group">
           <span class="label-inline">Heure :</span>
           <input v-model="time" type="time" class="input input-sm" />

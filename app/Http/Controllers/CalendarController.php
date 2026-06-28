@@ -47,7 +47,7 @@ class CalendarController extends BaseController
             ->where('user_id', $userId)
             ->where(function ($q) use ($start, $end) {
                 $q->whereBetween('date_training', [$start, $end])
-                ->orWhereBetween('end_training', [$start, $end]);
+                    ->orWhereBetween('end_training', [$start, $end]);
             })
             ->get();
 
@@ -71,24 +71,25 @@ class CalendarController extends BaseController
         $validated = $request->validate([
             'title' => 'required|string',
             'start' => 'required|date',
-            'end' => 'required|date',
-            'end_training' => 'nullable|date',
-            'instrument_id' => 'nullable|integer',
+            'end' => 'nullable|date',
+            'instrument_id' => 'nullable|exists:generic_instruments,id',
             'link' => 'nullable|string',
-            'sheet_id' => 'nullable|integer',
-
+            'sheet_id' => 'nullable|exists:sheets,id',
         ]);
 
         $userId = Auth::id();
 
         $start = Carbon::parse($validated['start']);
-        $end = Carbon::parse($validated['end']);
+
+        $end = isset($validated['end'])
+            ? Carbon::parse($validated['end'])
+            : $start->copy()->addMinutes(30);
 
         $training = Training::create([
             'name' => $validated['title'],
-            'instrument_id' => $validated['instrument_id'],
-            'link' => $validated['link'],
-            'sheet_id' => $validated['sheet_id'],
+            'instrument_id' => $validated['instrument_id'] ?? null,
+            'link' => $validated['link'] ?? null,
+            'sheet_id' => $validated['sheet_id'] ?? null,
             'date_training' => $start,
             'end_training' => $end,
             'duration' => $start->diffInMinutes($end),
@@ -97,6 +98,7 @@ class CalendarController extends BaseController
 
         return response()->json($this->formatEvent($training), 201);
     }
+
 
     public function update(Request $request, $id)
     {
@@ -117,7 +119,8 @@ class CalendarController extends BaseController
             'sheet_id' => $request->sheet_id ?? $training->sheet_id,
             'date_training' => $start,
             'end_training' => $end,
-            'duration' => $start->diffInMinutes($end),]);
+            'duration' => $start->diffInMinutes($end),
+        ]);
 
         return response()->json($this->formatEvent($training->fresh(['instrument', 'sheet'])));
     }
@@ -142,23 +145,23 @@ class CalendarController extends BaseController
     }
 
     public function listSheets()
-{
-    $sheets = Sheet::select('id', 'name')->get();
-    return response()->json($sheets);
-}
+    {
+        $sheets = Sheet::select('id', 'name')->get();
+        return response()->json($sheets);
+    }
 
     private function formatEvent($t)
-{
-    return [
-        'id' => $t->id,
-        'title' => $t->name,
-        'instrument_id' => $t->instrument_id,
-        'instrument' => $t->instrument?->name,
-        'sheet_id' => $t->sheet_id,
-        'sheet' => $t->sheet?->name,
-        'link' => $t->link,
-        'start' => $t->date_training->toIso8601String(),
-        'end' => $t->end_training->toIso8601String(),
-    ];
-}
+    {
+        return [
+            'id' => $t->id,
+            'title' => $t->name,
+            'instrument_id' => $t->instrument_id,
+            'instrument' => $t->instrument?->name,
+            'sheet_id' => $t->sheet_id,
+            'sheet' => $t->sheet?->name,
+            'link' => $t->link,
+            'start' => $t->date_training->toIso8601String(),
+            'end' => $t->end_training->toIso8601String(),
+        ];
+    }
 }

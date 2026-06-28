@@ -48,7 +48,8 @@ defineProps({
 
     <!-- ── Aucun entraînement ─────────────────────────────── -->
     <div v-else class="training-card training-card--empty">
-        <span class="empty-icon">😢</span>
+        <span class="empty-icon"></span>
         <p>Aucun entraînement à venir</p>
     </div>
 </template>
+

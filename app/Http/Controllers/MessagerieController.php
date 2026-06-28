@@ -140,7 +140,7 @@ class MessagerieController extends Controller
     }
 
     /**
-     * Messages d'une conversation (JSON pour polling).
+     * Messages d'une conversation.
      */
     public function messages(Conversation $conversation)
     {

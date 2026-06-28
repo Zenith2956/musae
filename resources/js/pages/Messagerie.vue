@@ -153,7 +153,7 @@ function initials(name) {
 
                             </div>
                             <button v-if="selectedUsers.length" @click="createConversation()"
-                                style="margin-top:0.6rem; width:100%; padding:0.6rem; background:#0d9488; color:white; border-radius:0.6rem;">
+                                style="margin-top:0.6rem; width:100%; padding:0.6rem; background:#0091A7; color:white; border-radius:0.6rem;">
                                 Créer la conversation ({{ selectedUsers.length }} membres)
                             </button>
 

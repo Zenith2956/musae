@@ -41,11 +41,21 @@ class DatabaseSeeder extends Seeder
         );
 
         $user = User::firstOrCreate(
-            ['email' => 'test2@example.com'],
+            ['email' => 'erwann@example.com'],
             [
-                'name' => 'Test User 2',
-                'nickname' => 'testuser2',
-                'password' => bcrypt('123password'),
+                'name' => 'Erwann',
+                'nickname' => 'erwann',
+                'password' => bcrypt('superprof'),
+                'role_id' => 1,
+            ]
+        );
+
+        $user = User::firstOrCreate(
+            ['email' => 'arthur@example.com'],
+            [
+                'name' => 'Arthur',
+                'nickname' => 'arthur',
+                'password' => bcrypt('password123'),
                 'role_id' => 1,
             ]
         );

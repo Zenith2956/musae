@@ -51,74 +51,64 @@ const footerNavItems: NavItem[] = [
 
 <template>
     <Sidebar collapsible="icon" variant="inset">
+        <img src="../../assets/logo.png" alt="Logo" class="logo-sidebar" />
         <section class="sidebar-layout">
-        <SidebarHeader class="flex flex-col items-center gap-4 px-4 py-6">
-            <!-- <SidebarMenu>
-                <SidebarMenuItem>
-                    <SidebarMenuButton size="lg" as-child>
-                        <Link :href="dashboard.url()">
-                            <AppLogo />
-                        </Link>
-                    </SidebarMenuButton>
-                </SidebarMenuItem>
-            </SidebarMenu> -->
+            <SidebarHeader class="flex flex-col items-center gap-4 px-4 py-6">
 
-            <!-- Mon compte -->
-            <SidebarMenu>
-                <SidebarMenuItem>
-                    <NavUser class="primary-btn" />
-                    <!-- <SidebarMenuButton as-child class="rounded-full bg-[#f0b429] px-4 py-2 text-center font-semibold text-white hover:bg-[#e0a419] hover:text-white">
+                <!-- Mon compte -->
+                <SidebarMenu>
+                    <SidebarMenuItem>
+                        <NavUser class="primary-btn" />
 
-                        <Link :href="dashboard.url()" class="flex items-center justify-center gap-2" style="color: black;">
-                            Mon compte
-                        </Link>
-                    </SidebarMenuButton> -->
-                </SidebarMenuItem>
-            </SidebarMenu>
+                    </SidebarMenuItem>
+                </SidebarMenu>
 
-            <!-- Avatar -->
-            <div class="h-16 w-16 rounded-full bg-gray-300" />
+                <!-- Avatar -->
+                <div class="h-16 w-16 rounded-full bg-gray-300" />
 
-            <!-- Messagerie -->
-            <SidebarMenu>
-                <SidebarMenuItem>
-                    <SidebarMenuButton as-child class="rounded-full bg-[#f0b429] px-4 py-2 font-semibold text-white hover:bg-[#e0a419] hover:text-white">
-                        <Link :href="messagerie.url()" class="flex items-center justify-center gap-2" style="color: black;">
-                            <Mail class="h-4 w-4" />
-                            Messagerie
-                        </Link>
-                    </SidebarMenuButton>
-                </SidebarMenuItem>
-            </SidebarMenu>
-        </SidebarHeader>
+                <!-- Messagerie -->
+                <SidebarMenu>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton as-child
+                            class="rounded-full bg-[#f0b429] px-4 py-2 font-semibold text-white hover:bg-[#e0a419] hover:text-white">
+                            <Link :href="messagerie.url()" class="flex items-center justify-center gap-2"
+                                style="color: black;">
+                                <Mail class="h-4 w-4" />
+                                Messagerie
+                            </Link>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                </SidebarMenu>
+            </SidebarHeader>
 
-        <SidebarContent class="px-4 py-4">
-            <SidebarGroup>
-                <SidebarGroupContent>
-                    <SidebarMenu>
-                        <SidebarMenuItem v-for="item in mainNavItems">
-                            <SidebarMenuButton as-child class="text-xl font-light text-white hover:bg-transparent hover:opacity-80">
-                                <Link :href="item.href">
-                                    <h2>{{ item.title }}</h2>
-                                </Link>
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
-                    </SidebarMenu>
-                </SidebarGroupContent>
-            </SidebarGroup>
-        </SidebarContent>
+            <SidebarContent class="px-4 py-4">
+                <SidebarGroup>
+                    <SidebarGroupContent>
+                        <SidebarMenu>
+                            <SidebarMenuItem v-for="item in mainNavItems">
+                                <SidebarMenuButton as-child
+                                    class="text-xl font-light text-white hover:bg-transparent hover:opacity-80">
+                                    <Link :href="item.href">
+                                        <h2>{{ item.title }}</h2>
+                                    </Link>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                        </SidebarMenu>
+                    </SidebarGroupContent>
+                </SidebarGroup>
+            </SidebarContent>
 
-        <SidebarFooter class="px-4 py-4">
-            <SidebarMenu>
-                <SidebarMenuItem v-for="item in footerNavItems">
-                    <SidebarMenuButton as-child class="text-xs text-white/70 hover:bg-transparent hover:text-white">
-                        <Link :href="item.href">
-                            <h3>{{ item.title }}</h3>
-                        </Link>
-                    </SidebarMenuButton>
-                </SidebarMenuItem>
-            </SidebarMenu>
-        </SidebarFooter>
+            <SidebarFooter class="px-4 py-4">
+                <SidebarMenu>
+                    <SidebarMenuItem v-for="item in footerNavItems">
+                        <SidebarMenuButton as-child class="text-xs text-white/70 hover:bg-transparent hover:text-white">
+                            <Link :href="item.href">
+                                <h3>{{ item.title }}</h3>
+                            </Link>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                </SidebarMenu>
+            </SidebarFooter>
         </section>
     </Sidebar>
     <slot />

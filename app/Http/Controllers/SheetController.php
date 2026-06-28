@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\GenericInstrument;
@@ -7,8 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Sheet;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
- 
-  
+   
 class SheetController extends Controller
 {
     public function index()
@@ -18,7 +16,6 @@ class SheetController extends Controller
             'sheets' => $sheets
         ]);
     }
-
     public function detail(Sheet $sheet)
     {
         return Inertia::render('Sheets/Detail', [
@@ -40,9 +37,7 @@ class SheetController extends Controller
         ]);
 
         $data['user_id'] = Auth::id();
-
         Sheet::create($data);
-
         return redirect('/library');
     }
 
@@ -69,8 +64,4 @@ class SheetController extends Controller
         $instruments = GenericInstrument::all(['id', 'name']);
         return response()->json($instruments);
     }
-    
-    
-    
-
 }

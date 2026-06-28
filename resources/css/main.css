@@ -227,3 +227,7 @@ input, select, textarea{
     width: auto;
     padding: 0.5em;
 }
+
+.logo-sidebar{
+    padding: 2em;
+}

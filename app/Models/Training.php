@@ -38,3 +38,15 @@ class Training extends Model
         return $this->belongsTo(GenericInstrument::class, 'instrument_id');
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+

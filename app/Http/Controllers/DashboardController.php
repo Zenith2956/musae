@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Training;
 use Illuminate\Support\Carbon;
-
 use OpenApi\Attributes as OA;
 
 class DashboardController extends Controller
@@ -40,3 +39,12 @@ class DashboardController extends Controller
         ]);
     }
 }
+
+
+
+
+
+
+
+
+

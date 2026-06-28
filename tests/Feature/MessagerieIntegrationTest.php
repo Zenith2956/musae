@@ -14,7 +14,6 @@ class MessagerieIntegrationTest extends TestCase
         $user = User::factory()->create();
         $this->actingAs($user);
 
-        // Créer une conversation vide
         $conversation = Conversation::factory()->create();
         $conversation->users()->attach($user->id);
 

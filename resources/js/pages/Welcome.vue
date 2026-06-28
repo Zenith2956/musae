@@ -54,7 +54,7 @@ withDefaults(
                 v-if="canRegister"
                 :href="register()"
                 >
-                Register
+                S'inscrire
             </Link>
             </template>
             </div>
